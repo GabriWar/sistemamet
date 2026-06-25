@@ -63,7 +63,7 @@ function fakeLink(r) {
     </div>
 
     <div class="connect">
-      <input v-model="cq" placeholder="🔗 Conectar com outra obra…" />
+      <input v-model="cq" placeholder="⇄ Conectar com outra obra…" />
       <div v-if="cResults.length" class="connect-res">
         <button v-for="w in cResults" :key="w.id" @click="connectTo(w)">
           <i :style="{ background: TYPES[w.type].color }"></i>{{ w.title }}
@@ -72,7 +72,7 @@ function fakeLink(r) {
     </div>
 
     <button class="distant-btn" @click="$emit('distant', work.id)">
-      🧭 Obra mais distante <span>+ caminho até ela</span>
+      ⌖ Obra mais distante <span>+ caminho até ela</span>
     </button>
 
     <p class="desc">{{ work.desc }}</p>
