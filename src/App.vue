@@ -134,6 +134,13 @@ function clearPath() {
   pathEnds.value = null
   activePath.value = null
 }
+function closeSheet() {
+  selectedLink.value = null
+  pool.value = []
+  selectedTag.value = null
+  clearPath()
+  sheetOpen.value = false
+}
 function selectLink(link) {
   selectedLink.value = link
   sheetOpen.value = true
@@ -240,7 +247,7 @@ function navigate(v) {
             <div v-if="selectedTag" class="tagp">
               <div class="tagp-head">
                 <span class="chip" :style="{ color: tagDim?.color, borderColor: (tagDim?.color || '#888') + '66' }">{{ tagDim?.label }}</span>
-                <button class="why-x" @click="pickTag(null)">✕</button>
+                <button class="why-x" @click="closeSheet">✕</button>
               </div>
               <h2 class="tagp-title">{{ selectedTag }}</h2>
               <p class="tagp-sub">{{ tagWorks.length }} obras têm esse conceito. Clique para abrir no grafo de relações.</p>
@@ -272,7 +279,7 @@ function navigate(v) {
             :active-path="activePath"
             @set-active="activePath = $event"
             @select-node="selectNode"
-            @close="clearPath"
+            @close="closeSheet"
           />
           <PoolPanel
             v-else-if="pool.length"
@@ -280,13 +287,13 @@ function navigate(v) {
             :ranking="poolRank"
             @remove="togglePool"
             @add="togglePool"
-            @clear="pool = []"
+            @clear="closeSheet"
           />
           <WhyPanel
             v-else-if="selectedLink"
             :link="selectedLink"
             @select-node="selectNode"
-            @close="selectedLink = null"
+            @close="closeSheet"
           />
           <WorkDetail
             v-else-if="selectedWork"
