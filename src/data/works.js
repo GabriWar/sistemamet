@@ -62,6 +62,17 @@ export function relatedTo(id, n = 8) {
     .slice(0, n)
 }
 
+// Top-N obras MENOS similares (as mais distantes/opostas).
+export function leastRelated(id, n = 8) {
+  const base = WORKS_BY_ID[id]
+  if (!base) return []
+  return WORKS.filter((w) => w.id !== id)
+    .map((w) => ({ work: w, ...similarity(base, w) }))
+    .sort((a, b) => a.score - b.score)
+    .slice(0, n)
+}
+
+
 // ---- Subgrafo "ego": só o que está visível ---------------------------------
 // Com ~290 obras não dá para mostrar tudo de uma vez. O grafo visível é montado
 // a partir de um conjunto de obras "abertas": cada obra aberta traz seus K

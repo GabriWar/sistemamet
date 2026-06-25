@@ -7,7 +7,7 @@ const props = defineProps({
   isFav: { type: Boolean, default: false },
   inList: { type: Boolean, default: false },
 })
-const emit = defineEmits(['select-node', 'select-link', 'toggle-fav', 'toggle-list', 'connect'])
+const emit = defineEmits(['select-node', 'select-link', 'toggle-fav', 'toggle-list', 'connect', 'distant'])
 
 // "Conectar com…": busca outra obra para traçar o caminho entre as duas
 const cq = ref('')
@@ -71,6 +71,10 @@ function fakeLink(r) {
       </div>
     </div>
 
+    <button class="distant-btn" @click="$emit('distant', work.id)">
+      🧭 Obra mais distante <span>+ caminho até ela</span>
+    </button>
+
     <p class="desc">{{ work.desc }}</p>
 
     <div class="attrs">
@@ -126,6 +130,14 @@ function fakeLink(r) {
 .connect-res button { width: 100%; display: flex; align-items: center; gap: 9px; padding: 9px 12px; font-size: 12.5px; color: var(--text-dim); text-align: left; }
 .connect-res button:hover { background: var(--panel-2); color: var(--text); }
 .connect-res i { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+
+.distant-btn {
+  display: flex; align-items: center; gap: 8px; width: 100%; justify-content: center;
+  padding: 9px 12px; border-radius: 9px; font-size: 12.5px; font-weight: 600;
+  background: var(--panel-2); border: 1px solid var(--border); color: var(--text-dim); transition: .12s;
+}
+.distant-btn:hover { color: var(--text); border-color: #f87171; }
+.distant-btn span { font-size: 11px; color: var(--text-faint); font-weight: 500; }
 .desc { font-size: 12.5px; color: var(--text-dim); line-height: 1.55; margin: 0; }
 
 .attrs { display: flex; flex-direction: column; gap: 8px; padding: 12px 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }

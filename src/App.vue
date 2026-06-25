@@ -1,6 +1,6 @@
 <script setup>
 import { ref, computed, watch } from 'vue'
-import { WORKS, WORKS_BY_ID, relatedTo, totalConnections, worksWithTag, DIM_BY_KEY, TYPES, pathsBetween, poolRanking } from './data/works.js'
+import { WORKS, WORKS_BY_ID, relatedTo, totalConnections, worksWithTag, DIM_BY_KEY, TYPES, pathsBetween, poolRanking, leastRelated } from './data/works.js'
 import Sidebar from './components/Sidebar.vue'
 import GraphView from './components/GraphView.vue'
 import KeywordGraph from './components/KeywordGraph.vue'
@@ -25,6 +25,7 @@ const selectedLink = ref(null)
 const pathResult = ref(null) // [{key,label,path,hops,length}] | [] (sem caminho) | null
 const pathEnds = ref(null)
 const activePath = ref(null)
+const distantNote = ref(null) // { title, score } quando o caminho é até a obra mais distante
 
 const pathSets = computed(() => (pathResult.value?.length ? pathResult.value.map((p) => p.path) : null))
 const pathColors = computed(() => (pathResult.value?.length ? pathResult.value.map((p) => PATH_COLOR[p.key]) : []))
@@ -120,6 +121,7 @@ function selectNode(id) {
   sheetOpen.value = true
 }
 function connect(fromId, toId) {
+  distantNote.value = null
   pathResult.value = pathsBetween(fromId, toId) || []
   pathEnds.value = { from: fromId, to: toId }
   activePath.value = null
@@ -129,10 +131,19 @@ function connect(fromId, toId) {
   view.value = 'buscar'
   sheetOpen.value = true
 }
+// obra mais distante (menos relacionada) que ainda tenha caminho, + as rotas até ela
+function showDistant(fromId) {
+  const far = leastRelated(fromId, 10)
+  let target = far.find((f) => pathsBetween(fromId, f.work.id)) || far[0]
+  if (!target) return
+  connect(fromId, target.work.id)
+  distantNote.value = { score: target.score }
+}
 function clearPath() {
   pathResult.value = null
   pathEnds.value = null
   activePath.value = null
+  distantNote.value = null
 }
 function closeSheet() {
   selectedLink.value = null
@@ -276,6 +287,7 @@ function navigate(v) {
             :paths="pathResult"
             :colors="pathColors"
             :ends="pathEnds"
+            :distant="distantNote"
             :active-path="activePath"
             @set-active="activePath = $event"
             @select-node="selectNode"
@@ -305,6 +317,7 @@ function navigate(v) {
             @toggle-fav="toggleFav"
             @toggle-list="toggleList"
             @connect="connect"
+            @distant="showDistant"
           />
           <div v-else class="intro">
             <div class="intro-badge">MeT</div>

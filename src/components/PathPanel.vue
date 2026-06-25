@@ -7,6 +7,7 @@ const props = defineProps({
   colors: { type: Array, required: true },
   ends: { type: Object, required: true }, // { from, to }
   activePath: { type: Number, default: null },
+  distant: { type: Object, default: null }, // { score } quando é a obra mais distante
 })
 defineEmits(['set-active', 'select-node', 'close'])
 
@@ -22,8 +23,13 @@ function sharedOf(hop) {
 <template>
   <div class="pp">
     <div class="pp-head">
-      <span class="pp-tag">O que une as duas</span>
+      <span class="pp-tag">{{ distant ? 'A obra mais distante' : 'O que une as duas' }}</span>
       <button class="pp-x" @click="$emit('close')">✕</button>
+    </div>
+
+    <div v-if="distant" class="pp-distant">
+      A menos relacionada — só <b>{{ Math.round(distant.score * 100) }}%</b> em comum.
+      Mesmo assim, o grafo liga as duas por aqui:
     </div>
 
     <div class="pp-ends">
@@ -71,6 +77,8 @@ function sharedOf(hop) {
 .pp-tag { font-size: 12px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--accent-2); }
 .pp-x { color: var(--text-faint); font-size: 14px; }
 .pp-x:hover { color: var(--text); }
+.pp-distant { font-size: 12px; color: var(--text-dim); line-height: 1.5; padding: 9px 11px; border-radius: 9px; background: rgba(248,113,113,.1); border: 1px solid rgba(248,113,113,.3); }
+.pp-distant b { color: #fca5a5; }
 .pp-ends { font-size: 14px; line-height: 1.5; }
 .pp-ends b { color: var(--text); }
 .pp-ends span { color: var(--text-faint); margin: 0 6px; }
