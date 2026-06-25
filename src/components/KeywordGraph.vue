@@ -210,7 +210,7 @@ function tagColor(n) { return DIM_BY_KEY[n.dim].color }
 </template>
 
 <style scoped>
-.kw-wrap { position: relative; height: 100%; width: 100%; border: 1px solid var(--border); border-radius: 16px; background: var(--panel); overflow: hidden; }
+.kw-wrap { position: relative; height: 100%; width: 100%; border: 1px solid var(--border); border-radius: 16px; background: var(--panel); overflow: hidden; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
 .kw-svg { width: 100%; height: 100%; display: block; cursor: grab; touch-action: none; }
 .kw-svg:active { cursor: grabbing; }
 
@@ -240,4 +240,14 @@ function tagColor(n) { return DIM_BY_KEY[n.dim].color }
 .kw-legend i { width: 10px; height: 10px; border-radius: 50%; }
 
 .kw-hint { position: absolute; right: 14px; bottom: 12px; font-size: 10.5px; color: var(--text-faint); background: rgba(10,13,20,.6); padding: 6px 10px; border-radius: 8px; border: 1px solid var(--border); max-width: 300px; text-align: right; }
+
+@media (max-width: 820px) {
+  .kw-wrap { border-radius: 14px; }
+  .kw-hint { display: none; }
+  .kw-grav { top: 10px; left: 10px; }
+  .kw-grav input[type='range'] { width: 74px; }
+  .kw-controls { top: 10px; right: 10px; }
+  .kw-controls button { width: 30px; height: 30px; }
+  .kw-legend { left: 10px; bottom: 10px; gap: 8px; padding: 6px 9px; }
+}
 </style>

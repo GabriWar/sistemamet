@@ -108,4 +108,10 @@ const shown = computed(() => {
 .empty-icon { font-size: 40px; color: var(--text-faint); }
 .empty strong { font-size: 15px; color: var(--text); }
 .empty p { font-size: 12.5px; max-width: 320px; line-height: 1.5; margin: 0; }
+
+@media (max-width: 820px) {
+  .coll { padding: 16px 14px 28px; }
+  .coll-head h1 { font-size: 19px; }
+  .grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; }
+}
 </style>

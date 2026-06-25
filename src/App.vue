@@ -17,6 +17,8 @@ const totalWorks = WORKS.length
 const totalConns = totalConnections()
 const view = ref('buscar')
 const graphMode = ref('obras') // 'obras' | 'conceitos'
+const mobileMenu = ref(false) // drawer da sidebar no celular
+const sheetOpen = ref(false) // painel como bottom-sheet no celular
 const selectedTag = ref(null)
 const selectedId = ref(null)
 const selectedLink = ref(null)
@@ -31,7 +33,9 @@ const pathColors = computed(() => (pathResult.value?.length ? pathResult.value.m
 const pool = ref([])
 const poolRank = computed(() => poolRanking(pool.value, 14))
 function togglePool(id) {
-  pool.value = pool.value.includes(id) ? pool.value.filter((x) => x !== id) : [...pool.value, id]
+  const has = pool.value.includes(id)
+  pool.value = has ? pool.value.filter((x) => x !== id) : [...pool.value, id]
+  if (!has) sheetOpen.value = true
 }
 const hoverLinkKey = ref(null)
 const hidden = ref(new Set())
@@ -113,6 +117,7 @@ function selectNode(id) {
   selectedLink.value = null
   clearPath()
   pushHistory(id)
+  sheetOpen.value = true
 }
 function connect(fromId, toId) {
   pathResult.value = pathsBetween(fromId, toId) || []
@@ -122,6 +127,7 @@ function connect(fromId, toId) {
   selectedLink.value = null
   graphMode.value = 'obras'
   view.value = 'buscar'
+  sheetOpen.value = true
 }
 function clearPath() {
   pathResult.value = null
@@ -130,6 +136,7 @@ function clearPath() {
 }
 function selectLink(link) {
   selectedLink.value = link
+  sheetOpen.value = true
 }
 // abrir uma obra a partir de uma coleção → leva ao grafo já focado nela
 function openWork(id) {
@@ -139,6 +146,7 @@ function openWork(id) {
 }
 function pickTag(t) {
   selectedTag.value = t
+  if (t) sheetOpen.value = true
 }
 const tagWorks = computed(() => (selectedTag.value ? worksWithTag(selectedTag.value) : []))
 const tagDim = computed(() => (selectedTag.value ? DIM_BY_KEY[
@@ -158,11 +166,13 @@ function toggleType(k) {
 function navigate(v) {
   view.value = v
   showResults.value = false
+  mobileMenu.value = false
 }
 </script>
 
 <template>
-  <div class="app">
+  <div class="app" :class="{ 'menu-open': mobileMenu, 'sheet-open': sheetOpen }">
+    <div class="scrim" @click="mobileMenu = false"></div>
     <Sidebar
       :hidden="hidden" :view="view" :counts="counts"
       @toggle-type="toggleType" @navigate="navigate"
@@ -170,6 +180,7 @@ function navigate(v) {
 
     <main class="main">
       <header class="topbar">
+        <button class="hamb" @click="mobileMenu = !mobileMenu" aria-label="menu">☰</button>
         <div class="search">
           <span class="search-icon">⌕</span>
           <input
@@ -223,6 +234,7 @@ function navigate(v) {
         </section>
 
         <aside class="panel">
+          <button class="sheet-handle" @click="sheetOpen = false" aria-label="fechar painel"><span></span></button>
           <!-- modo conceitos: obras que têm a keyword clicada -->
           <template v-if="graphMode === 'conceitos'">
             <div v-if="selectedTag" class="tagp">
@@ -309,6 +321,8 @@ function navigate(v) {
             <button v-if="featured[0]" class="intro-cta" @click="openWork(featured[0].id)">Começar por {{ featured[0].title }} →</button>
           </div>
         </aside>
+
+        <button v-if="!sheetOpen" class="sheet-peek" @click="sheetOpen = true">▲ painel</button>
       </div>
 
       <!-- VIEWS de coleção -->
@@ -437,4 +451,47 @@ function navigate(v) {
 .intro-cta:hover { border-color: var(--accent); }
 
 .overlay { position: fixed; inset: 0; z-index: 20; }
+
+/* controles só de celular escondidos no desktop */
+.hamb, .scrim, .sheet-handle, .sheet-peek { display: none; }
+
+@media (max-width: 820px) {
+  .hamb {
+    display: grid; place-items: center; width: 40px; height: 40px; flex-shrink: 0;
+    border-radius: 10px; background: var(--panel); border: 1px solid var(--border);
+    color: var(--text-dim); font-size: 18px;
+  }
+  .scrim { position: fixed; inset: 0; background: rgba(0,0,0,.55); z-index: 55; }
+  .app:not(.menu-open) .scrim { display: none; }
+  .sidebar {
+    position: fixed; left: 0; top: 0; bottom: 0; z-index: 60;
+    transform: translateX(-100%); transition: transform .25s ease;
+  }
+  .app.menu-open .sidebar { transform: none; }
+
+  .topbar { gap: 9px; padding: 10px 12px; }
+  .topbar-title { display: none; }
+  .search { max-width: none; }
+  .search input { padding: 10px 14px 10px 38px; font-size: 13px; }
+  .gmode { flex-shrink: 0; }
+  .gmode button { padding: 7px 11px; font-size: 12px; }
+
+  .workspace { display: block; padding: 10px; gap: 0; }
+  .graph-col { height: calc(100dvh - 92px); }
+
+  .panel {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 50;
+    max-height: 82dvh; border-radius: 18px 18px 0 0; border-bottom: none;
+    padding: 4px 16px 22px; box-shadow: 0 -16px 44px rgba(0,0,0,.55);
+    transform: translateY(103%); transition: transform .28s ease;
+  }
+  .app.sheet-open .panel { transform: translateY(0); }
+  .sheet-handle { display: block; width: 100%; padding: 9px 0 12px; }
+  .sheet-handle span { display: block; width: 42px; height: 4px; border-radius: 3px; background: var(--text-faint); margin: 0 auto; opacity: .6; }
+  .sheet-peek {
+    display: block; position: fixed; left: 50%; bottom: 14px; transform: translateX(-50%); z-index: 45;
+    padding: 9px 20px; border-radius: 999px; background: var(--accent); color: #0a0d14;
+    font-size: 12.5px; font-weight: 700; box-shadow: 0 6px 20px rgba(0,0,0,.45);
+  }
+}
 </style>

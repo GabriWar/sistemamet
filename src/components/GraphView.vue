@@ -143,6 +143,9 @@ function rebuild(reheat = 0.7) {
 
 // ---- interação -------------------------------------------------------------
 let dragNode = null
+let longTimer = null
+let longFired = false
+let pressStart = null
 
 function toGraph(evt) {
   const r = svgEl.value.getBoundingClientRect()
@@ -157,7 +160,17 @@ function onNodePointerDown(n, evt) {
   evt.stopPropagation()
   dragNode = n
   n._moved = false
+  longFired = false
+  pressStart = { x: evt.clientX, y: evt.clientY }
   sim.value.alphaTarget(0.3).restart()
+  // toque longo (ou segurar) = juntar à pool
+  longTimer = setTimeout(() => {
+    longFired = true
+    emit('toggle-pool', n.id)
+    if (navigator.vibrate) navigator.vibrate(15)
+    sim.value.alphaTarget(0)
+    if (dragNode) { dragNode.fx = null; dragNode.fy = null; dragNode = null }
+  }, 460)
   window.addEventListener('pointermove', onPointerMove)
   window.addEventListener('pointerup', onPointerUp)
 }
@@ -172,6 +185,10 @@ function onBgPointerDown(evt) {
 
 function onPointerMove(evt) {
   if (dragNode) {
+    // mexeu o dedo/mouse → é arraste, cancela o toque longo
+    if (pressStart && (Math.abs(evt.clientX - pressStart.x) > 8 || Math.abs(evt.clientY - pressStart.y) > 8)) {
+      clearTimeout(longTimer); longTimer = null
+    }
     const p = toGraph(evt)
     dragNode.fx = p.x
     dragNode.fy = p.y
@@ -182,11 +199,12 @@ function onPointerMove(evt) {
 }
 
 function onPointerUp() {
+  clearTimeout(longTimer); longTimer = null
   if (dragNode) {
     sim.value.alphaTarget(0)
     dragNode.fx = null
     dragNode.fy = null
-    if (!dragNode._moved) emit('select-node', dragNode.id) // clicar = focar + expandir
+    if (!dragNode._moved && !longFired) emit('select-node', dragNode.id) // tap = focar + expandir
     dragNode = null
   }
   panning = null
@@ -332,8 +350,8 @@ watch(gravity, (g) => {
     </div>
 
     <div class="graph-hint">
-      {{ positioned.nodes.length }} à vista · <b>clique</b> p/ focar e expandir ·
-      <b>botão direito</b> = juntar à pool · clique na aresta p/ o porquê · ⟳ recomeça
+      {{ positioned.nodes.length }} à vista · <b>toque</b> p/ focar e expandir ·
+      <b>segure</b> (ou botão direito) = juntar à pool · ⟳ recomeça
     </div>
   </div>
 </template>
@@ -342,6 +360,7 @@ watch(gravity, (g) => {
 .graph-wrap {
   position: relative; height: 100%; width: 100%;
   border: 1px solid var(--border); border-radius: 16px; background: var(--panel); overflow: hidden;
+  user-select: none; -webkit-user-select: none; -webkit-touch-callout: none;
 }
 .graph-svg { width: 100%; height: 100%; display: block; cursor: grab; touch-action: none; }
 .graph-svg:active { cursor: grabbing; }
@@ -424,4 +443,15 @@ watch(gravity, (g) => {
   max-width: 300px; text-align: right;
 }
 .graph-hint b { color: var(--text-dim); }
+
+@media (max-width: 820px) {
+  .graph-wrap { border-radius: 14px; }
+  .graph-hint { display: none; }
+  .gravity-ctl { top: 10px; left: 10px; padding: 6px 9px; gap: 6px; }
+  .gravity-ctl input[type='range'] { width: 74px; }
+  .graph-controls { top: 10px; right: 10px; }
+  .graph-controls button { width: 30px; height: 30px; font-size: 15px; }
+  .graph-legend { left: 10px; bottom: 10px; gap: 8px; padding: 6px 9px; }
+  .legend-item { font-size: 10px; }
+}
 </style>
