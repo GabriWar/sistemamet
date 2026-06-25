@@ -3,15 +3,19 @@ import { ref, shallowRef, watch, onMounted, onBeforeUnmount, computed } from 'vu
 import {
   forceSimulation, forceLink, forceManyBody, forceCollide, forceCenter, forceX, forceY,
 } from 'd3-force'
-import { TYPES, egoGraph, fixedGraph, seedWorks } from '../data/works.js'
+import { TYPES, egoGraph, fixedGraph, seedWorks, pathSetsGraph, poolGraph } from '../data/works.js'
 
 const props = defineProps({
   selectedId: { type: String, default: null },
   hoverLinkKey: { type: String, default: null },
   hidden: { type: Object, default: () => new Set() },
   perNode: { type: Number, default: 7 },
+  pathSets: { type: Array, default: null }, // array de rotas (arrays de ids)
+  pathColors: { type: Array, default: () => ['#4ade80', '#facc15', '#f87171'] },
+  activePath: { type: Number, default: null }, // rota destacada (índice) ou null
+  poolIds: { type: Array, default: () => [] }, // obras na pool (botão direito)
 })
-const emit = defineEmits(['select-node', 'select-link', 'hover-link', 'recenter'])
+const emit = defineEmits(['select-node', 'select-link', 'hover-link', 'recenter', 'toggle-pool'])
 
 const svgEl = ref(null)
 const W = ref(900)
@@ -29,11 +33,33 @@ const gravity = ref(0.05) // força que puxa os nós ao centro
 // obras "abertas" (cada uma traz seus vizinhos). vazio = sementes iniciais.
 const expanded = ref(new Set())
 
-// subgrafo visível: sem nada aberto = só as sementes; senão, ego das abertas
+const pathMode = computed(() => !!props.pathSets?.length)
+const poolMode = computed(() => !pathMode.value && props.poolIds.length > 0)
+const poolSet = computed(() => new Set(props.poolIds))
+
+// subgrafo visível: rotas > pool > sementes > ego das abertas
 const visible = computed(() => {
+  if (pathMode.value) return pathSetsGraph(props.pathSets)
+  if (poolMode.value) return poolGraph(props.poolIds, 12, props.hidden)
   if (!expanded.value.size) return fixedGraph(seedWorks(14), props.hidden)
   return egoGraph([...expanded.value], { perNode: props.perNode, exclude: props.hidden })
 })
+
+// nós da rota destacada (para escurecer as outras)
+const activeNodes = computed(() => {
+  if (!pathMode.value || props.activePath == null) return null
+  return new Set(props.pathSets[props.activePath] || [])
+})
+// cor de um traço: se houver rota ativa usa a cor dela; senão a menor rota que o usa
+function edgeColor(l) {
+  if (!l.paths?.length) return '#36415f'
+  if (props.activePath != null && l.paths.includes(props.activePath)) return props.pathColors[props.activePath]
+  return props.pathColors[Math.min(...l.paths)]
+}
+function edgeOn(l) {
+  if (props.activePath == null) return true
+  return l.paths?.includes(props.activePath)
+}
 
 function nodeRadius(n) {
   const base = 15 + (n.rating / (n.ratingMax === 5 ? 5 : 10)) * 11
@@ -64,16 +90,19 @@ const positioned = computed(() => {
 })
 
 function isNodeActive(n) {
+  if (pathMode.value) return activeNodes.value ? activeNodes.value.has(n.id) : true
   if (!neighborIds.value) return true
   return neighborIds.value.has(n.id)
 }
 function isLinkActive(l) {
+  if (pathMode.value) return edgeOn(l)
   if (!props.selectedId) return true
   const s = l.source.id || l.source
   const t = l.target.id || l.target
   return s === props.selectedId || t === props.selectedId
 }
 function isExpandable(n) {
+  if (pathMode.value) return false
   return n.id !== props.selectedId && !expanded.value.has(n.id)
 }
 
@@ -124,6 +153,7 @@ function toGraph(evt) {
 }
 
 function onNodePointerDown(n, evt) {
+  if (evt.button === 2) return // botão direito = pool (tratado no contextmenu)
   evt.stopPropagation()
   dragNode = n
   n._moved = false
@@ -134,6 +164,7 @@ function onNodePointerDown(n, evt) {
 
 let panning = null
 function onBgPointerDown(evt) {
+  if (evt.button === 2) return
   panning = { sx: evt.clientX, sy: evt.clientY, ox: pan.value.x, oy: pan.value.y }
   window.addEventListener('pointermove', onPointerMove)
   window.addEventListener('pointerup', onPointerUp)
@@ -225,7 +256,7 @@ watch(gravity, (g) => {
 
 <template>
   <div class="graph-wrap">
-    <svg ref="svgEl" class="graph-svg" @pointerdown="onBgPointerDown" @wheel="onWheel">
+    <svg ref="svgEl" class="graph-svg" @pointerdown="onBgPointerDown" @wheel="onWheel" @contextmenu.prevent>
       <g :transform="`translate(${pan.x},${pan.y}) scale(${zoom})`">
         <TransitionGroup tag="g" name="link" class="links">
           <g
@@ -241,10 +272,11 @@ watch(gravity, (g) => {
             <line
               class="link-line"
               :x1="l.source.x" :y1="l.source.y" :x2="l.target.x" :y2="l.target.y"
-              :stroke-width="1 + l.score * 5"
+              :stroke-width="pathMode ? 3 + l.score * 4 : 1 + l.score * 5"
+              :style="pathMode ? { stroke: edgeColor(l), opacity: edgeOn(l) ? 1 : 0.12 } : null"
             />
             <text
-              v-if="(isLinkActive(l) && selectedId) || hoverLinkKey === linkKey(l)"
+              v-if="(isLinkActive(l) && selectedId) || hoverLinkKey === linkKey(l) || (pathMode && edgeOn(l))"
               class="link-label"
               :x="(l.source.x + l.target.x) / 2"
               :y="(l.source.y + l.target.y) / 2"
@@ -257,12 +289,14 @@ watch(gravity, (g) => {
             v-for="n in positioned.nodes"
             :key="n.id"
             class="node-g"
-            :class="{ dim: !isNodeActive(n), selected: n.id === selectedId }"
+            :class="{ dim: !isNodeActive(n), selected: n.id === selectedId, pooled: poolSet.has(n.id) }"
             :transform="`translate(${n.x || 0},${n.y || 0})`"
             @pointerdown="onNodePointerDown(n, $event)"
+            @contextmenu.prevent.stop="emit('toggle-pool', n.id)"
           >
             <g class="node-inner">
               <circle v-if="n.id === selectedId" class="node-ring" :r="nodeRadius(n) + 6" :stroke="TYPES[n.type].color" />
+              <circle v-if="poolSet.has(n.id)" class="node-pool-ring" :r="nodeRadius(n) + 4" />
               <circle
                 class="node-dot"
                 :r="nodeRadius(n)"
@@ -298,8 +332,8 @@ watch(gravity, (g) => {
     </div>
 
     <div class="graph-hint">
-      {{ positioned.nodes.length }} obras à vista · clique num nó p/ focar e <b>expandir</b> ·
-      clique numa aresta p/ ver o porquê · ⟳ recomeça
+      {{ positioned.nodes.length }} à vista · <b>clique</b> p/ focar e expandir ·
+      <b>botão direito</b> = juntar à pool · clique na aresta p/ o porquê · ⟳ recomeça
     </div>
   </div>
 </template>
@@ -326,7 +360,9 @@ watch(gravity, (g) => {
 .node-g { cursor: pointer; transition: opacity .25s; }
 .node-g.dim { opacity: .2; }
 .node-dot { transition: r .2s; }
-.node-ring { fill: none; stroke-width: 2.5; opacity: .9; }
+.node-ring { fill: none; stroke-width: 2.5; opacity: .9; animation: ringpulse 1.7s ease-in-out infinite; }
+@keyframes ringpulse { 0%, 100% { opacity: .9; stroke-width: 2.5; } 50% { opacity: .35; stroke-width: 4; } }
+.node-pool-ring { fill: none; stroke: #fff; stroke-width: 2.5; stroke-dasharray: 4 3; opacity: .85; }
 .node-expand { fill: var(--panel-2); stroke: var(--accent); stroke-width: 1.5; }
 .node-expand-plus { text-anchor: middle; font-size: 9px; font-weight: 800; fill: var(--accent); pointer-events: none; }
 .node-emoji { text-anchor: middle; font-weight: 800; font-size: 14px; fill: #0a0d14; pointer-events: none; }

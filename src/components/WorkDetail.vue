@@ -1,13 +1,25 @@
 <script setup>
-import { computed } from 'vue'
-import { TYPES, relatedTo } from '../data/works.js'
+import { computed, ref } from 'vue'
+import { TYPES, relatedTo, WORKS } from '../data/works.js'
 
 const props = defineProps({
   work: { type: Object, required: true },
   isFav: { type: Boolean, default: false },
   inList: { type: Boolean, default: false },
 })
-defineEmits(['select-node', 'select-link', 'toggle-fav', 'toggle-list'])
+const emit = defineEmits(['select-node', 'select-link', 'toggle-fav', 'toggle-list', 'connect'])
+
+// "Conectar com…": busca outra obra para traçar o caminho entre as duas
+const cq = ref('')
+const cResults = computed(() => {
+  const q = cq.value.trim().toLowerCase()
+  if (!q) return []
+  return WORKS.filter((w) => w.id !== props.work.id && w.title.toLowerCase().includes(q)).slice(0, 6)
+})
+function connectTo(w) {
+  emit('connect', props.work.id, w.id)
+  cq.value = ''
+}
 
 const type = computed(() => TYPES[props.work.type])
 const related = computed(() => relatedTo(props.work.id, 8))
@@ -48,6 +60,15 @@ function fakeLink(r) {
       <button :class="{ on: inList }" @click="$emit('toggle-list', work.id)">
         {{ inList ? '✓ Na lista' : '+ Minha Lista' }}
       </button>
+    </div>
+
+    <div class="connect">
+      <input v-model="cq" placeholder="🔗 Conectar com outra obra…" />
+      <div v-if="cResults.length" class="connect-res">
+        <button v-for="w in cResults" :key="w.id" @click="connectTo(w)">
+          <i :style="{ background: TYPES[w.type].color }"></i>{{ w.title }}
+        </button>
+      </div>
     </div>
 
     <p class="desc">{{ work.desc }}</p>
@@ -97,6 +118,14 @@ function fakeLink(r) {
 }
 .actions button:hover { color: var(--text); border-color: var(--accent); }
 .actions button.on { color: var(--text); border-color: var(--accent); background: var(--panel); }
+
+.connect { position: relative; }
+.connect input { width: 100%; padding: 9px 12px; border-radius: 9px; background: var(--panel-2); border: 1px solid var(--border); color: var(--text); font-size: 12.5px; outline: none; }
+.connect input:focus { border-color: var(--accent); }
+.connect-res { position: absolute; top: calc(100% + 5px); left: 0; right: 0; z-index: 5; background: var(--panel); border: 1px solid var(--border); border-radius: 9px; overflow: hidden; box-shadow: 0 14px 34px rgba(0,0,0,.5); }
+.connect-res button { width: 100%; display: flex; align-items: center; gap: 9px; padding: 9px 12px; font-size: 12.5px; color: var(--text-dim); text-align: left; }
+.connect-res button:hover { background: var(--panel-2); color: var(--text); }
+.connect-res i { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
 .desc { font-size: 12.5px; color: var(--text-dim); line-height: 1.55; margin: 0; }
 
 .attrs { display: flex; flex-direction: column; gap: 8px; padding: 12px 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }

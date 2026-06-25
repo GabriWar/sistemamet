@@ -1,12 +1,17 @@
 <script setup>
 import { ref, computed, watch } from 'vue'
-import { WORKS, WORKS_BY_ID, relatedTo, totalConnections, worksWithTag, DIM_BY_KEY, TYPES } from './data/works.js'
+import { WORKS, WORKS_BY_ID, relatedTo, totalConnections, worksWithTag, DIM_BY_KEY, TYPES, pathsBetween, poolRanking } from './data/works.js'
 import Sidebar from './components/Sidebar.vue'
 import GraphView from './components/GraphView.vue'
 import KeywordGraph from './components/KeywordGraph.vue'
 import WorkDetail from './components/WorkDetail.vue'
 import WhyPanel from './components/WhyPanel.vue'
+import PathPanel from './components/PathPanel.vue'
+import PoolPanel from './components/PoolPanel.vue'
 import CollectionView from './components/CollectionView.vue'
+
+// cor por papel da rota: verde=curto, amarelo=médio, vermelho=longo
+const PATH_COLOR = { curto: '#4ade80', medio: '#facc15', longo: '#f87171' }
 
 const totalWorks = WORKS.length
 const totalConns = totalConnections()
@@ -15,6 +20,19 @@ const graphMode = ref('obras') // 'obras' | 'conceitos'
 const selectedTag = ref(null)
 const selectedId = ref(null)
 const selectedLink = ref(null)
+const pathResult = ref(null) // [{key,label,path,hops,length}] | [] (sem caminho) | null
+const pathEnds = ref(null)
+const activePath = ref(null)
+
+const pathSets = computed(() => (pathResult.value?.length ? pathResult.value.map((p) => p.path) : null))
+const pathColors = computed(() => (pathResult.value?.length ? pathResult.value.map((p) => PATH_COLOR[p.key]) : []))
+
+// pool (botão direito) — obras parecidas com o conjunto
+const pool = ref([])
+const poolRank = computed(() => poolRanking(pool.value, 14))
+function togglePool(id) {
+  pool.value = pool.value.includes(id) ? pool.value.filter((x) => x !== id) : [...pool.value, id]
+}
 const hoverLinkKey = ref(null)
 const hidden = ref(new Set())
 
@@ -93,7 +111,22 @@ const counts = computed(() => ({
 function selectNode(id) {
   selectedId.value = id
   selectedLink.value = null
+  clearPath()
   pushHistory(id)
+}
+function connect(fromId, toId) {
+  pathResult.value = pathsBetween(fromId, toId) || []
+  pathEnds.value = { from: fromId, to: toId }
+  activePath.value = null
+  selectedId.value = null
+  selectedLink.value = null
+  graphMode.value = 'obras'
+  view.value = 'buscar'
+}
+function clearPath() {
+  pathResult.value = null
+  pathEnds.value = null
+  activePath.value = null
 }
 function selectLink(link) {
   selectedLink.value = link
@@ -172,10 +205,15 @@ function navigate(v) {
             :selected-id="selectedId"
             :hover-link-key="hoverLinkKey"
             :hidden="hidden"
+            :path-sets="pathSets"
+            :path-colors="pathColors"
+            :active-path="activePath"
+            :pool-ids="pool"
             @select-node="selectNode"
             @select-link="selectLink"
             @hover-link="hoverLinkKey = $event"
-            @recenter="selectedId = null; selectedLink = null"
+            @toggle-pool="togglePool"
+            @recenter="selectedId = null; selectedLink = null; clearPath()"
           />
           <KeywordGraph
             v-else
@@ -206,14 +244,32 @@ function navigate(v) {
               <p>Aqui os <b>nós são as palavras-chave</b> — gêneros, temas, tom e ambientação. As arestas mostram <b>co-ocorrência</b>: dois conceitos se ligam quando aparecem juntos em muitas obras.</p>
               <p>O tamanho do nó = frequência no acervo. As cores separam as quatro dimensões. É o <b>DNA</b> do catálogo.</p>
               <ol class="steps">
-                <li><span>1</span> Clique num <b>conceito</b> para destacar com o que ele anda colado.</li>
-                <li><span>2</span> Veja ao lado as <b>obras</b> que carregam aquele conceito.</li>
-                <li><span>3</span> Abra uma obra para pular ao grafo de <b>relações</b>.</li>
+                <li><span class="step-n">1</span><span class="step-t">Clique num <b>conceito</b> para destacar com o que ele anda colado.</span></li>
+                <li><span class="step-n">2</span><span class="step-t">Veja ao lado as <b>obras</b> que carregam aquele conceito.</span></li>
+                <li><span class="step-n">3</span><span class="step-t">Abra uma obra para pular ao grafo de <b>relações</b>.</span></li>
               </ol>
             </div>
           </template>
 
-          <!-- modo obras -->
+          <!-- modo obras: caminho entre duas obras -->
+          <PathPanel
+            v-else-if="pathResult"
+            :paths="pathResult"
+            :colors="pathColors"
+            :ends="pathEnds"
+            :active-path="activePath"
+            @set-active="activePath = $event"
+            @select-node="selectNode"
+            @close="clearPath"
+          />
+          <PoolPanel
+            v-else-if="pool.length"
+            :pool="pool"
+            :ranking="poolRank"
+            @remove="togglePool"
+            @add="togglePool"
+            @clear="pool = []"
+          />
           <WhyPanel
             v-else-if="selectedLink"
             :link="selectedLink"
@@ -229,6 +285,7 @@ function navigate(v) {
             @select-link="selectLink"
             @toggle-fav="toggleFav"
             @toggle-list="toggleList"
+            @connect="connect"
           />
           <div v-else class="intro">
             <div class="intro-badge">MeT</div>
@@ -244,10 +301,10 @@ function navigate(v) {
               pode abrir e auditar.
             </p>
             <ol class="steps">
-              <li><span>1</span> Clique num <b>nó</b> para focar a obra e ver seus vizinhos.</li>
-              <li><span>2</span> Clique numa <b>aresta</b> para ver <b>por que</b> duas obras se conectam.</li>
-              <li><span>3</span> Use as <b>categorias</b> na lateral para filtrar tipos de mídia.</li>
-              <li><span>4</span> Arraste os nós, ajuste a <b>gravidade</b> e dê <b>zoom</b>.</li>
+              <li><span class="step-n">1</span><span class="step-t">Clique num <b>nó</b> para focar a obra e ver seus vizinhos.</span></li>
+              <li><span class="step-n">2</span><span class="step-t">Clique numa <b>aresta</b> para ver <b>por que</b> duas obras se conectam.</span></li>
+              <li><span class="step-n">3</span><span class="step-t">Use as <b>categorias</b> na lateral para filtrar tipos de mídia.</span></li>
+              <li><span class="step-n">4</span><span class="step-t">Arraste os nós, ajuste a <b>gravidade</b> e dê <b>zoom</b>.</span></li>
             </ol>
             <button v-if="featured[0]" class="intro-cta" @click="openWork(featured[0].id)">Começar por {{ featured[0].title }} →</button>
           </div>
@@ -366,10 +423,12 @@ function navigate(v) {
 .intro b { color: var(--text); font-weight: 600; }
 .steps { list-style: none; padding: 0; margin: 6px 0 4px; display: flex; flex-direction: column; gap: 10px; }
 .steps li { display: flex; gap: 11px; font-size: 12.5px; color: var(--text-dim); line-height: 1.45; align-items: flex-start; }
-.steps li span {
+.steps .step-n {
   flex-shrink: 0; width: 22px; height: 22px; border-radius: 7px; display: grid; place-items: center;
   background: var(--panel-2); border: 1px solid var(--border); font-size: 11px; font-weight: 700; color: var(--accent);
 }
+.steps .step-t { flex: 1; }
+.steps .step-t b { color: var(--text); font-weight: 600; }
 .intro-cta {
   margin-top: 6px; padding: 12px 16px; border-radius: 11px; font-size: 13px; font-weight: 600;
   background: var(--panel-2);
