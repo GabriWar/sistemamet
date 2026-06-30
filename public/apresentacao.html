@@ -20,7 +20,7 @@
   .deck{height:100vh;width:100vw;overflow:hidden;position:relative}
   .slides{height:100%;display:flex;transition:transform .45s cubic-bezier(.4,0,.2,1)}
   .slide{
-    min-width:100vw;height:100vh;flex-shrink:0;
+    width:100vw;height:100vh;flex:0 0 auto;
     display:flex;flex-direction:column;justify-content:center;
     padding:6vh 8vw; position:relative;
   }
@@ -31,7 +31,7 @@
   b,strong{color:var(--text);font-weight:600}
   code{font-family:'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace}
   .accent{color:var(--accent)}
-  .grad{background:linear-gradient(120deg,var(--accent),var(--accent2));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .grad{color:var(--accent)}
   .kicker{font-size:13px;letter-spacing:.22em;text-transform:uppercase;color:var(--accent);font-weight:700;margin-bottom:16px}
   .pill{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;
     padding:4px 11px;border-radius:999px;background:var(--panel2);border:1px solid var(--border);color:var(--accent2)}
@@ -62,7 +62,7 @@
   .legend i{width:12px;height:12px;border-radius:50%}
 
   .team{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:10px}
-  .member{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:16px 16px 18px;border-top:3px solid var(--accent)}
+  .member{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:16px 16px 18px}
   .member .role{font-size:13px;font-weight:700;color:var(--text);line-height:1.25;min-height:2.4em}
   .member .desc{font-size:11.5px;color:var(--dim);margin-top:8px;line-height:1.4}
   .member .who{font-size:11px;color:var(--faint);margin-top:12px;border-top:1px dashed var(--border);padding-top:9px}
@@ -73,7 +73,7 @@
   .formula small{color:var(--faint);font-size:.6em}
 
   /* navegação */
-  .bar{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--accent),var(--accent2));z-index:10;transition:width .45s}
+  .bar{position:fixed;top:0;left:0;height:3px;background:var(--accent);z-index:10;transition:width .45s}
   .hud{position:fixed;bottom:22px;right:28px;font-size:13px;color:var(--faint);z-index:10;font-variant-numeric:tabular-nums}
   .hud b{color:var(--dim)}
   .brandmark{position:fixed;bottom:22px;left:28px;font-size:13px;color:var(--faint);z-index:10;letter-spacing:.04em}
@@ -396,16 +396,25 @@ A = [ <span class="c-fn">dijkstra</span>(a, b) ]
 </div>
 
 <script>
+  const deck = document.querySelector('.deck');
   const slidesEl = document.getElementById('slides');
   const total = slidesEl.children.length;
   let i = 0;
   document.getElementById('tot').textContent = total;
+  function width(){ return deck.clientWidth; }
+  function apply(animate){
+    const w = width();
+    for(const s of slidesEl.children) s.style.width = w + 'px';
+    slidesEl.style.transition = animate ? 'transform .45s cubic-bezier(.4,0,.2,1)' : 'none';
+    slidesEl.style.transform = 'translateX(' + (-i*w) + 'px)';
+  }
   function go(n){
     i = Math.max(0, Math.min(total-1, n));
-    slidesEl.style.transform = 'translateX(' + (-i*100) + 'vw)';
+    apply(true);
     document.getElementById('cur').textContent = i+1;
     document.getElementById('bar').style.width = ((i+1)/total*100) + '%';
   }
+  addEventListener('resize', ()=>apply(false));
   function next(){ go(i+1); } function prev(){ go(i-1); }
   document.getElementById('next').onclick = next;
   document.getElementById('prev').onclick = prev;
