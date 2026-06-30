@@ -197,6 +197,47 @@
     </div>
   </section>
 
+  <!-- 4B · EXEMPLO DE SIMILARIDADE -->
+  <section class="slide">
+    <div class="kicker">Pilar 2 — exemplo real</div>
+    <h2>Como a nota <span class="accent">nasce</span></h2>
+    <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin:2px 0 22px">
+      <b style="font-size:clamp(16px,1.8vw,21px)">Game of Thrones</b>
+      <span style="color:var(--faint);font-size:13px">série</span>
+      <span style="font-size:24px;color:var(--accent)">×</span>
+      <b style="font-size:clamp(16px,1.8vw,21px)">As Crônicas de Gelo e Fogo</b>
+      <span style="color:var(--faint);font-size:13px">livro</span>
+      <span style="margin-left:auto;font-size:clamp(30px,4vw,46px);font-weight:800">100%</span>
+    </div>
+    <div class="cols">
+      <div style="display:flex;flex-direction:column;gap:18px">
+        <div>
+          <div style="display:flex;gap:10px;font-size:14px;margin-bottom:7px"><b>Gêneros</b><span style="color:var(--faint)">peso 0,30</span><span style="margin-left:auto;color:#6ee7a8;font-weight:700">+0,30</span></div>
+          <div style="height:7px;border-radius:4px;background:var(--panel2)"><div style="height:100%;width:100%;background:#f472b6;border-radius:4px"></div></div>
+          <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap"><span class="pill">fantasia</span><span class="pill">drama</span></div>
+        </div>
+        <div>
+          <div style="display:flex;gap:10px;font-size:14px;margin-bottom:7px"><b>Tom</b><span style="color:var(--faint)">peso 0,20</span><span style="margin-left:auto;color:#6ee7a8;font-weight:700">+0,20</span></div>
+          <div style="height:7px;border-radius:4px;background:var(--panel2)"><div style="height:100%;width:100%;background:#38bdf8;border-radius:4px"></div></div>
+          <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap"><span class="pill">sombrio</span><span class="pill">épico</span><span class="pill">maduro</span></div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:18px">
+        <div>
+          <div style="display:flex;gap:10px;font-size:14px;margin-bottom:7px"><b>Temas</b><span style="color:var(--faint)">peso 0,30</span><span style="margin-left:auto;color:#6ee7a8;font-weight:700">+0,30</span></div>
+          <div style="height:7px;border-radius:4px;background:var(--panel2)"><div style="height:100%;width:100%;background:#a855f7;border-radius:4px"></div></div>
+          <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap"><span class="pill">poder</span><span class="pill">traição</span><span class="pill">política</span><span class="pill">moralidade-cinza</span></div>
+        </div>
+        <div>
+          <div style="display:flex;gap:10px;font-size:14px;margin-bottom:7px"><b>Ambientação</b><span style="color:var(--faint)">peso 0,20</span><span style="margin-left:auto;color:#6ee7a8;font-weight:700">+0,20</span></div>
+          <div style="height:7px;border-radius:4px;background:var(--panel2)"><div style="height:100%;width:100%;background:#34d399;border-radius:4px"></div></div>
+          <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap"><span class="pill">medieval</span><span class="pill">mundo-fantástico</span></div>
+        </div>
+      </div>
+    </div>
+    <p style="margin-top:18px;font-size:14px">Mesma história em mídias diferentes ⇒ compartilham <b>tudo</b>: 0,30+0,30+0,20+0,20 = <b>1,00</b>. A nota é literalmente uma soma auditável.</p>
+  </section>
+
   <!-- 5 · MODELAGEM (o grafo) -->
   <section class="slide">
     <div class="kicker">Pilar 2 — Modelagem computacional</div>
@@ -319,6 +360,30 @@ A = [ <span class="c-fn">dijkstra</span>(a, b) ]
 <span class="c-key">return</span> escolher(curto, médio, longo)</code></pre>
       </div>
     </div>
+  </section>
+
+  <!-- 9B · EXEMPLO DE CAMINHO -->
+  <section class="slide">
+    <div class="kicker">Pilar 4 — exemplo real</div>
+    <h2>Yen na prática: <span class="accent">Batman → Taxi Driver</span></h2>
+    <p>Dois filmes quase sem relação direta. O grafo acha as <b>pontes</b> — e dá rotas de tamanhos diferentes:</p>
+    <div class="cols" style="margin-top:14px">
+      <div class="card">
+        <h3><span style="width:11px;height:11px;border-radius:50%;background:#4ade80;display:inline-block"></span>Rota mais curta · 2 saltos</h3>
+        <p style="font-size:15px;line-height:1.9">
+          Batman <span style="color:#4ade80">—49%—</span> Better Call Saul <span style="color:#4ade80">—64%—</span> Taxi Driver
+        </p>
+        <p style="font-size:13px;color:var(--faint)">crime &amp; tragédia moral ligam os dois rapidinho.</p>
+      </div>
+      <div class="card">
+        <h3><span style="width:11px;height:11px;border-radius:50%;background:#f87171;display:inline-block"></span>Rota mais longa · 3 saltos</h3>
+        <p style="font-size:15px;line-height:1.9">
+          Batman <span style="color:#f87171">—49%—</span> Better Call Saul <span style="color:#f87171">—64%—</span> Coringa <span style="color:#f87171">—92%—</span> Taxi Driver
+        </p>
+        <p style="font-size:13px;color:var(--faint)">passa por Coringa, quase idêntico a Taxi Driver (92%).</p>
+      </div>
+    </div>
+    <p style="margin-top:18px;font-size:14px">Cada salto é uma aresta real do grafo; a % é a similaridade que <b>justifica</b> a ponte. Custo do caminho = soma de <code>(1 − similaridade)</code>.</p>
   </section>
 
   <!-- 10 · CONCEITOS + POOL + DISTANTE -->
@@ -474,6 +539,27 @@ A = [ <span class="c-fn">dijkstra</span>(a, b) ]
     </div>
   </section>
 
+  <!-- REQUISITOS DO EDITAL -->
+  <section class="slide">
+    <div class="kicker">Defesa — alinhamento ao edital</div>
+    <h2>Requisitos do projeto <span class="accent">atendidos</span></h2>
+    <div class="cols">
+      <ul class="feat" style="font-size:15px">
+        <li><span class="dot" style="background:#22c55e"></span><b>Problema real</b> — recomendação por interesses em comum (exemplo do próprio roteiro).</li>
+        <li><span class="dot" style="background:#22c55e"></span><b>Modelagem clara</b> — vértices = obras, arestas = similaridade.</li>
+        <li><span class="dot" style="background:#22c55e"></span><b>Não-orientado e ponderado</b> (peso = similaridade).</li>
+        <li><span class="dot" style="background:#22c55e"></span><b>Lista de adjacência</b> como estrutura de dados.</li>
+      </ul>
+      <ul class="feat" style="font-size:15px">
+        <li><span class="dot" style="background:#22c55e"></span><b>Menor caminho — Dijkstra</b> (+ Yen para K rotas).</li>
+        <li><span class="dot" style="background:#22c55e"></span><b>Processa inteligência</b>, não só desenha o grafo.</li>
+        <li><span class="dot" style="background:#22c55e"></span><b>Interface web</b> publicada e no ar 24/7.</li>
+        <li><span class="dot" style="background:#22c55e"></span><b>Equipe de 8</b> com divisão clara de papéis.</li>
+      </ul>
+    </div>
+    <p style="margin-top:18px;font-size:14px">Avaliação: modelagem coerente ✓ · algoritmo correto sem gambiarra ✓ · relevância prática ✓ · trabalho em equipe ✓</p>
+  </section>
+
   <!-- 12 · DIVISÃO DE TRABALHO (8) -->
   <section class="slide">
     <div class="kicker">Equipe</div>
@@ -496,6 +582,17 @@ A = [ <span class="c-fn">dijkstra</span>(a, b) ]
       <div class="member"><div class="role">Visualização, UI &amp; deploy</div>
         <div class="desc">d3-force, Vue, responsivo e publicação.</div><div class="who">resp.: <b>[ nome ]</b></div></div>
     </div>
+  </section>
+
+  <!-- DEMO AO VIVO (interativo) -->
+  <section class="slide" style="padding:4vh 4vw;justify-content:flex-start">
+    <div style="display:flex;align-items:baseline;gap:14px;margin:1vh 0 12px;flex-wrap:wrap">
+      <div class="kicker" style="margin:0">Demo ao vivo</div>
+      <h2 style="margin:0;font-size:clamp(20px,2.6vw,32px)">Grafo interativo — <span class="accent">aqui mesmo</span></h2>
+      <span style="margin-left:auto;font-size:12px;color:var(--faint)">clique nos nós · arraste · segure p/ pool</span>
+    </div>
+    <iframe src="/" title="metegraph ao vivo" loading="lazy"
+      style="flex:1;width:100%;min-height:0;border:1px solid var(--border);border-radius:14px;background:var(--panel)"></iframe>
   </section>
 
   <!-- 13 · FECHAMENTO -->
