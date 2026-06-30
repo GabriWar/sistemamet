@@ -137,13 +137,13 @@
       <div>
         <p><b>Tema.</b> Um explorador de obras (filmes, séries, livros e animes) que conecta
         títulos por <b>semelhança de conteúdo</b> e deixa o usuário navegar essas conexões.</p>
-        <p style="margin-top:16px"><b>O problema.</b> Recomendadores comuns são <b>caixas-pretas</b>:
-        dizem "você vai gostar disto" sem dizer <i>por quê</i>.</p>
+        <p style="margin-top:16px"><b>O problema.</b> A maioria dos recomendadores é <b>caixa-preta</b>:
+        solta um "você vai gostar disto" e fica por isso mesmo, sem dizer <i>por quê</i>.</p>
       </div>
       <div>
         <p><b>Justificativa.</b> Modelar o acervo como um <b>grafo</b> torna a recomendação
-        <b>transparente e auditável</b>: cada conexão é uma conta que dá pra abrir, e a navegação
-        vira um problema clássico de grafos (vizinhança, caminhos, distância).</p>
+        <b>transparente e auditável</b>. Sem mágica: cada conexão é uma conta que dá pra abrir e conferir,
+        e navegar nelas vira um problema clássico de grafos (vizinhança, caminhos, distância).</p>
         <div class="legend">
           <span><i style="background:var(--filme)"></i>Filme</span>
           <span><i style="background:var(--serie)"></i>Série</span>
@@ -269,7 +269,7 @@
   <!-- 6 · PILAR 3: ESTRUTURAS DE DADOS -->
   <section class="slide">
     <div class="kicker">Pilar 3: Estruturas de dados</div>
-    <h2>Como o grafo é <span class="grad">guardado</span></h2>
+    <h2>Como a gente <span class="grad">guarda</span> o grafo</h2>
     <div class="cols3">
       <div class="card"><h3><span class="num">1</span>Lista de adjacência</h3>
         <p><code>Map&lt;id, [{id, score}]&gt;</code>: vizinhos de cada nó. Base dos algoritmos de caminho. Memoizada (construída uma vez).</p></div>
@@ -624,7 +624,7 @@ A = [ <span class="c-fn">dijkstra</span>(a, b) ]
   <section class="slide cover">
     <div class="kicker">Demonstração</div>
     <h1 class="grad" style="max-width:18ch">Obrigado.<br>Vamos ao grafo.</h1>
-    <p style="margin-top:6px">Quatro pilares (tema, modelagem, estruturas e algoritmos) num só sistema interativo.</p>
+    <p style="margin-top:6px">Quatro pilares (tema, modelagem, estruturas e algoritmos) num sistema só, e dá pra clicar em tudo.</p>
     <div class="url" style="font-size:20px;margin-top:22px"><b class="accent">metegraph.gabriwar.xyz</b></div>
   </section>
 
