@@ -360,6 +360,120 @@ A = [ <span class="c-fn">dijkstra</span>(a, b) ]
     </div>
   </section>
 
+  <!-- DEEP DIVE A · DECISÕES DE MODELAGEM -->
+  <section class="slide">
+    <div class="kicker">Aprofundamento — por que funciona</div>
+    <h2>Decisões de modelagem (e o <span class="accent">porquê</span>)</h2>
+    <div class="cols3">
+      <div class="card"><h3>Overlap, não Jaccard</h3>
+        <p>Usamos <code>|A∩B| / min(|A|,|B|)</code> em vez de Jaccard <code>|A∩B|/|A∪B|</code>.
+        O overlap vai a <b>1 quando um conjunto contém o outro</b> — dá notas altas e fáceis de explicar
+        ("3 de 3 temas em comum") e não pune obras com nº de atributos diferente.</p></div>
+      <div class="card"><h3>Pesos por dimensão</h3>
+        <p><b>Gêneros 0,30 · Temas 0,30 · Tom 0,20 · Ambientação 0,20.</b>
+        Gênero e tema carregam o maior sinal de afinidade; tom e ambientação <b>refinam</b>.
+        Soma = 1 ⇒ score sempre em <code>[0,1]</code>, comparável entre pares.</p></div>
+      <div class="card"><h3>Limiar 0,45</h3>
+        <p>Abaixo disso o grafo vira <b>novelo</b> (arestas fracas, sem sentido); acima, ele
+        <b>fragmenta</b> em ilhas. 0,45 mantém ~3.386 arestas e um <b>componente conexo</b> grande —
+        garante que quase todo par tem caminho.</p></div>
+    </div>
+    <p style="margin-top:18px;font-size:14px">Consequência central: como cada aresta guarda o <b>breakdown</b> por dimensão,
+    nenhuma recomendação é caixa-preta — toda nota é uma soma auditável.</p>
+  </section>
+
+  <!-- DEEP DIVE B · COMPLEXIDADE -->
+  <section class="slide">
+    <div class="kicker">Aprofundamento — custo computacional</div>
+    <h2>Complexidade dos <span class="accent">algoritmos</span></h2>
+    <div class="cols">
+      <ul class="feat" style="font-size:15px">
+        <li><span class="dot"></span><b>Construção do grafo:</b> <code>O(V²·d)</code> — todos os pares × atributos (~42k pares, 1×).</li>
+        <li><span class="dot"></span><b>Vizinhos (related/least):</b> <code>O(V·d + V log V)</code> por consulta.</li>
+        <li><span class="dot"></span><b>Dijkstra:</b> <code>O(V²)</code> nesta versão (seleção por varredura); com heap seria <code>O(E log V)</code>.</li>
+      </ul>
+      <ul class="feat" style="font-size:15px">
+        <li><span class="dot"></span><b>Yen (3 rotas):</b> ≈ <code>K</code> execuções de Dijkstra (K=18).</li>
+        <li><span class="dot"></span><b>Co-ocorrência:</b> <code>O(V·t²)</code> — t = atributos por obra.</li>
+        <li><span class="dot"></span><b>Pool / mais distante:</b> <code>O(V·|S|)</code> e <code>O(V·d)</code>.</li>
+        <li><span class="dot"></span><b>Layout (por tick):</b> <code>O(V log V)</code> via Barnes-Hut.</li>
+      </ul>
+    </div>
+    <p style="margin-top:18px;font-size:14px">Tudo roda no navegador. O grafo completo é montado <b>uma vez</b> (memoizado); as consultas
+    interativas operam só sobre <b>subgrafos pequenos</b>, então a UI continua fluida.</p>
+  </section>
+
+  <!-- DEEP DIVE C · FORCE LAYOUT -->
+  <section class="slide">
+    <div class="kicker">Aprofundamento — visualização</div>
+    <h2>Force-directed layout: <span class="accent">física</span> emergente</h2>
+    <div class="cols">
+      <div>
+        <p>Não há coordenadas fixas. As posições <b>emergem</b> de uma simulação física (d3-force):</p>
+        <ul class="feat" style="font-size:15px;margin-top:8px">
+          <li><span class="dot"></span><b>Repulsão</b> (forceManyBody): todo nó empurra os outros — tipo Coulomb, aproximado por <b>quadtree Barnes-Hut</b>.</li>
+          <li><span class="dot"></span><b>Molas</b> (forceLink): arestas puxam; comprimento ∝ <code>(1−sim)</code>, rigidez ∝ <code>sim</code> ⇒ similares ficam <b>perto</b>.</li>
+          <li><span class="dot"></span><b>Colisão</b> + <b>gravidade central</b> (forceX/Y, ajustável) seguram o conjunto.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="formula" style="font-size:15px">a cada tick:<br>
+        &nbsp;&nbsp;v ← (v + Σforças) · (1 − atrito)<br>
+        &nbsp;&nbsp;pos ← pos + v<br>
+        &nbsp;&nbsp;alpha ← alpha · decay<br>
+        <small>para quando alpha → 0 (esfria)</small></div>
+        <p style="font-size:14px">Por que funciona: o sistema busca um <b>mínimo de energia</b> em que nós parecidos
+        se agrupam e arestas fortes ficam curtas — um "mapa" legível sem layout manual.
+        Render só ocorre <b>enquanto há movimento</b>; ao assentar, custo zero.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- DEEP DIVE D · ESCALA -->
+  <section class="slide">
+    <div class="kicker">Aprofundamento — escala &amp; desempenho</div>
+    <h2>Por que <span class="accent">subgrafos</span>, e não o grafo inteiro</h2>
+    <div class="cols">
+      <div>
+        <p>Desenhar 290 nós e 3.386 arestas de uma vez = <b>novelo ilegível</b> e SVG pesado.
+        A navegação é sempre <b>local</b>:</p>
+        <ul class="feat" style="font-size:15px;margin-top:8px">
+          <li><span class="dot"></span><b>Ego:</b> nó focado + top-K vizinhos (~8–40 nós em tela).</li>
+          <li><span class="dot"></span><b>Sementes:</b> abre com as obras mais bem avaliadas.</li>
+          <li><span class="dot"></span><b>Expansão incremental</b> ao clicar, preservando posições.</li>
+        </ul>
+      </div>
+      <div>
+        <ul class="feat" style="font-size:15px">
+          <li><span class="dot"></span><b>Adjacência memoizada:</b> custo O(V²) pago 1×, depois reuso O(1) por aresta.</li>
+          <li><span class="dot"></span><b>Subgrafos sob demanda:</b> pool, rotas e conceitos materializam só o necessário.</li>
+          <li><span class="dot"></span><b>Render reativo</b> só durante a simulação; estável = sem trabalho.</li>
+          <li><span class="dot"></span><b>Poda top-K</b> no grafo de conceitos evita explosão de arestas.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- DEEP DIVE E · ARQUITETURA -->
+  <section class="slide">
+    <div class="kicker">Aprofundamento — dados &amp; arquitetura</div>
+    <h2>Do dado ao <span class="accent">deploy</span></h2>
+    <div class="cols3">
+      <div class="card"><h3>Vocabulário controlado</h3>
+        <p>~100 atributos fixos em 4 dimensões. Sem sinônimos soltos ⇒ a sobreposição é <b>significativa</b> e os clusters realmente se formam.</p></div>
+      <div class="card"><h3>Catálogo local</h3>
+        <p>290 obras reais com seus atributos, em JS. <b>Zero API</b>, roda offline; a similaridade é 100% determinística.</p></div>
+      <div class="card"><h3>Stack &amp; build</h3>
+        <p><b>Vue 3 + Vite</b> (build estático), render do grafo em <b>SVG</b>, layout via <b>d3-force</b>.</p></div>
+      <div class="card"><h3>Estado do usuário</h3>
+        <p>Favoritos, lista e histórico em <b>localStorage</b>, saneados contra o catálogo a cada carga (auto-corrige).</p></div>
+      <div class="card"><h3>Publicação</h3>
+        <p>VPS com serviço <b>systemd</b> (Restart=always) atrás de um <b>túnel Cloudflare</b> — no ar 24/7.</p></div>
+      <div class="card"><h3>Explicabilidade</h3>
+        <p>O <b>breakdown</b> viaja em cada aresta e caminho: a interface sempre mostra <b>o que</b> e <b>quanto</b> liga duas obras.</p></div>
+    </div>
+  </section>
+
   <!-- 12 · DIVISÃO DE TRABALHO (8) -->
   <section class="slide">
     <div class="kicker">Equipe</div>
