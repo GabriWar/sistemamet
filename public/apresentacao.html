@@ -124,18 +124,18 @@
     </svg>
     <div class="kicker">Teoria dos Grafos · Trabalho Final</div>
     <div class="logo">m<span class="e">e</span>tegraph</div>
-    <div class="sub">Mapa de Engajamento Transmídia — recomendação <b>explicável</b> por grafos</div>
+    <div class="sub">Mapa de Engajamento Transmídia: recomendação <b>explicável</b> por grafos</div>
     <div class="url">metegraph.gabriwar.xyz</div>
     <p style="margin-top:26px;font-size:14px;color:var(--faint)">Apresentação · equipe de 8 integrantes</p>
   </section>
 
   <!-- 2 · PILAR 1: TEMA -->
   <section class="slide">
-    <div class="kicker">Pilar 1 — Tema &amp; Justificativa</div>
+    <div class="kicker">Pilar 1: Tema &amp; Justificativa</div>
     <h2>Por que recomendar com <span class="grad">grafos</span>?</h2>
     <div class="cols">
       <div>
-        <p><b>Tema.</b> Um explorador de obras — filmes, séries, livros e animes — que conecta
+        <p><b>Tema.</b> Um explorador de obras (filmes, séries, livros e animes) que conecta
         títulos por <b>semelhança de conteúdo</b> e deixa o usuário navegar essas conexões.</p>
         <p style="margin-top:16px"><b>O problema.</b> Recomendadores comuns são <b>caixas-pretas</b>:
         dizem "você vai gostar disto" sem dizer <i>por quê</i>.</p>
@@ -166,7 +166,7 @@
     <div class="cols3">
       <div class="card"><h3>Grafo de obras</h3><p>Começa por obras-semente; clicar <b>foca e expande</b> os vizinhos mais parecidos.</p></div>
       <div class="card"><h3>Por que conectados</h3><p>Clicar numa aresta abre o <b>detalhamento</b> da similaridade dimensão por dimensão.</p></div>
-      <div class="card"><h3>Caminho entre 2 obras</h3><p>3 rotas — <b>curta, média e longa</b> — mostrando as pontes entre dois títulos.</p></div>
+      <div class="card"><h3>Caminho entre 2 obras</h3><p>3 rotas (<b>curta, média e longa</b>) mostrando as pontes entre dois títulos.</p></div>
       <div class="card"><h3>Obra mais distante</h3><p>A <b>menos relacionada</b> + o caminho que mesmo assim liga as duas.</p></div>
       <div class="card"><h3>Grafo de conceitos</h3><p>Nós = palavras-chave; arestas = <b>co-ocorrência</b>. O "DNA" do acervo.</p></div>
       <div class="card"><h3>Pool</h3><p>Junta obras e revela as <b>mais parecidas com o conjunto</b>.</p></div>
@@ -175,21 +175,21 @@
 
   <!-- 4 · PILAR 2: MODELAGEM (similaridade) -->
   <section class="slide">
-    <div class="kicker">Pilar 2 — Modelagem computacional</div>
+    <div class="kicker">Pilar 2: Modelagem computacional</div>
     <h2>Da obra ao <span class="grad">nó</span>: atributos e similaridade</h2>
     <div class="cols">
       <div>
         <p>Cada obra é descrita por atributos em <b>4 dimensões</b>:</p>
         <ul class="feat">
-          <li><span class="dot" style="background:#f472b6"></span><b>Gêneros</b> — fantasia, ficção-científica, crime…</li>
-          <li><span class="dot" style="background:#a855f7"></span><b>Temas</b> — poder, vingança, identidade…</li>
-          <li><span class="dot" style="background:#38bdf8"></span><b>Tom</b> — sombrio, épico, melancólico…</li>
-          <li><span class="dot" style="background:#34d399"></span><b>Ambientação</b> — medieval, futuro, cidade…</li>
+          <li><span class="dot" style="background:#f472b6"></span><b>Gêneros</b>: fantasia, ficção-científica, crime…</li>
+          <li><span class="dot" style="background:#a855f7"></span><b>Temas</b>: poder, vingança, identidade…</li>
+          <li><span class="dot" style="background:#38bdf8"></span><b>Tom</b>: sombrio, épico, melancólico…</li>
+          <li><span class="dot" style="background:#34d399"></span><b>Ambientação</b>: medieval, futuro, cidade…</li>
         </ul>
       </div>
       <div>
         <p>A similaridade entre duas obras é a <b>sobreposição de atributos</b> por dimensão,
-        ponderada por peso — usando o <b>coeficiente de sobreposição</b>:</p>
+        ponderada por peso, usando o <b>coeficiente de sobreposição</b>:</p>
         <div class="formula">overlap(A,B) = |A ∩ B| / min(|A|,|B|)</div>
         <div class="formula">sim = Σ <small>dim</small> peso<small>dim</small> · overlap<small>dim</small><br>
         <small>gêneros 0,30 · temas 0,30 · tom 0,20 · ambientação 0,20</small></div>
@@ -199,7 +199,7 @@
 
   <!-- 4B · EXEMPLO DE SIMILARIDADE -->
   <section class="slide">
-    <div class="kicker">Pilar 2 — exemplo real</div>
+    <div class="kicker">Pilar 2: exemplo real</div>
     <h2>Como a nota <span class="accent">nasce</span></h2>
     <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin:2px 0 22px">
       <b style="font-size:clamp(16px,1.8vw,21px)">Game of Thrones</b>
@@ -240,7 +240,7 @@
 
   <!-- 5 · MODELAGEM (o grafo) -->
   <section class="slide">
-    <div class="kicker">Pilar 2 — Modelagem computacional</div>
+    <div class="kicker">Pilar 2: Modelagem computacional</div>
     <h2>O acervo vira um <span class="grad">grafo ponderado</span></h2>
     <div class="cols">
       <div>
@@ -248,7 +248,7 @@
           <li><span class="dot"></span><b>Vértices (V):</b> as ~290 obras.</li>
           <li><span class="dot"></span><b>Arestas (E):</b> par de obras com <b>sim ≥ 0,45</b> (limiar).</li>
           <li><span class="dot"></span><b>Peso:</b> a própria similaridade (0–1) na aresta.</li>
-          <li><span class="dot"></span><b>Não-direcionado</b> — semelhança é simétrica.</li>
+          <li><span class="dot"></span><b>Não-direcionado</b>: semelhança é simétrica.</li>
           <li><span class="dot"></span>Construído por <b>varredura de todos os pares</b> O(V²).</li>
         </ul>
       </div>
@@ -261,54 +261,54 @@
       links.<span class="c-fn">push</span>({ source, target,
                   score: s.score,
                   breakdown: s.breakdown })</code></pre>
-        <p style="font-size:14px;margin-top:14px">Cada aresta guarda o <b>breakdown</b> — quanto cada dimensão contribuiu — o que torna a recomendação explicável.</p>
+        <p style="font-size:14px;margin-top:14px">Cada aresta guarda o <b>breakdown</b> (quanto cada dimensão contribuiu), o que torna a recomendação explicável.</p>
       </div>
     </div>
   </section>
 
   <!-- 6 · PILAR 3: ESTRUTURAS DE DADOS -->
   <section class="slide">
-    <div class="kicker">Pilar 3 — Estruturas de dados</div>
+    <div class="kicker">Pilar 3: Estruturas de dados</div>
     <h2>Como o grafo é <span class="grad">guardado</span></h2>
     <div class="cols3">
       <div class="card"><h3><span class="num">1</span>Lista de adjacência</h3>
-        <p><code>Map&lt;id, [{id, score}]&gt;</code> — vizinhos de cada nó. Base dos algoritmos de caminho. Memoizada (construída uma vez).</p></div>
+        <p><code>Map&lt;id, [{id, score}]&gt;</code>: vizinhos de cada nó. Base dos algoritmos de caminho. Memoizada (construída uma vez).</p></div>
       <div class="card"><h3><span class="num">2</span>Lista de arestas</h3>
-        <p><code>[{source,target,score,breakdown}]</code> — usada para desenhar e para o "por quê".</p></div>
+        <p><code>[{source,target,score,breakdown}]</code>: usada para desenhar e para o "por quê".</p></div>
       <div class="card"><h3><span class="num">3</span>Hash / Map</h3>
-        <p><code>WORKS_BY_ID</code> — acesso O(1) à obra por id. Catálogo como lista de objetos.</p></div>
+        <p><code>WORKS_BY_ID</code>: acesso O(1) à obra por id. Catálogo como lista de objetos.</p></div>
       <div class="card"><h3><span class="num">4</span>Set (conjuntos)</h3>
         <p>Atributos por dimensão; <b>visitados</b> no Dijkstra; nós da pool; deduplicação de subgrafos.</p></div>
       <div class="card"><h3><span class="num">5</span>Dicionário de co-ocorrência</h3>
-        <p><code>cooc["a|b"] = contagem</code> — frequência de pares de conceitos (grafo de conceitos).</p></div>
+        <p><code>cooc["a|b"] = contagem</code>: frequência de pares de conceitos (grafo de conceitos).</p></div>
       <div class="card"><h3><span class="num">6</span>Subgrafos sob demanda</h3>
-        <p>Ego, pool e rotas geram <b>grafos parciais</b> — só o necessário é materializado.</p></div>
+        <p>Ego, pool e rotas geram <b>grafos parciais</b>: só o necessário é materializado.</p></div>
     </div>
   </section>
 
   <!-- 7 · PILAR 4: ALGORITMOS (overview) -->
   <section class="slide">
-    <div class="kicker">Pilar 4 — Algoritmos de grafos</div>
+    <div class="kicker">Pilar 4: Algoritmos de grafos</div>
     <h2>Quais algoritmos <span class="grad">rodam por baixo</span></h2>
     <div class="cols">
       <ul class="feat">
-        <li><span class="dot"></span><b>Construção por similaridade</b> — all-pairs O(V²).</li>
-        <li><span class="dot"></span><b>Subgrafo ego</b> — vizinhança top-K de um nó (expansão).</li>
-        <li><span class="dot"></span><b>Dijkstra</b> — caminho de maior afinidade entre 2 obras.</li>
+        <li><span class="dot"></span><b>Construção por similaridade</b>: all-pairs O(V²).</li>
+        <li><span class="dot"></span><b>Subgrafo ego</b>: vizinhança top-K de um nó (expansão).</li>
+        <li><span class="dot"></span><b>Dijkstra</b>: caminho de maior afinidade entre 2 obras.</li>
       </ul>
       <ul class="feat">
-        <li><span class="dot"></span><b>Yen (K-shortest paths)</b> — 3 rotas distintas.</li>
-        <li><span class="dot"></span><b>Co-ocorrência + poda top-K</b> — grafo de conceitos.</li>
-        <li><span class="dot"></span><b>Ranking por média / argmin</b> — pool e obra mais distante.</li>
-        <li><span class="dot"></span><b>Force-directed layout</b> — posicionamento (d3-force).</li>
+        <li><span class="dot"></span><b>Yen (K-shortest paths)</b>: 3 rotas distintas.</li>
+        <li><span class="dot"></span><b>Co-ocorrência + poda top-K</b>: grafo de conceitos.</li>
+        <li><span class="dot"></span><b>Ranking por média / argmin</b>: pool e obra mais distante.</li>
+        <li><span class="dot"></span><b>Force-directed layout</b>: posicionamento (d3-force).</li>
       </ul>
     </div>
   </section>
 
   <!-- 8 · DIJKSTRA -->
   <section class="slide">
-    <div class="kicker">Pilar 4 — Algoritmo em foco</div>
-    <h2><span class="grad">Dijkstra</span> — o caminho mais "forte"</h2>
+    <div class="kicker">Pilar 4: Algoritmo em foco</div>
+    <h2><span class="grad">Dijkstra</span>, o caminho mais "forte"</h2>
     <div class="cols">
       <div>
         <p>Para conectar duas obras, buscamos o caminho que <b>passa pelas ligações mais fortes</b>.
@@ -333,8 +333,8 @@
 
   <!-- 9 · YEN K-SHORTEST -->
   <section class="slide">
-    <div class="kicker">Pilar 4 — Algoritmo em foco</div>
-    <h2><span class="grad">Yen</span> — três rotas: curta, média e longa</h2>
+    <div class="kicker">Pilar 4: Algoritmo em foco</div>
+    <h2><span class="grad">Yen</span>, três rotas: curta, média e longa</h2>
     <div class="cols">
       <div>
         <p>O algoritmo de <b>Yen</b> acha os <b>K menores caminhos sem repetir nó</b>, reaplicando
@@ -364,21 +364,21 @@ A = [ <span class="c-fn">dijkstra</span>(a, b) ]
 
   <!-- 9B · EXEMPLO DE CAMINHO -->
   <section class="slide">
-    <div class="kicker">Pilar 4 — exemplo real</div>
+    <div class="kicker">Pilar 4: exemplo real</div>
     <h2>Yen na prática: <span class="accent">Batman → Taxi Driver</span></h2>
-    <p>Dois filmes quase sem relação direta. O grafo acha as <b>pontes</b> — e dá rotas de tamanhos diferentes:</p>
+    <p>Dois filmes quase sem relação direta. O grafo acha as <b>pontes</b> e dá rotas de tamanhos diferentes:</p>
     <div class="cols" style="margin-top:14px">
       <div class="card">
         <h3><span style="width:11px;height:11px;border-radius:50%;background:#4ade80;display:inline-block"></span>Rota mais curta · 2 saltos</h3>
         <p style="font-size:15px;line-height:1.9">
-          Batman <span style="color:#4ade80">—49%—</span> Better Call Saul <span style="color:#4ade80">—64%—</span> Taxi Driver
+          Batman <span style="color:#4ade80">· 49% ·</span> Better Call Saul <span style="color:#4ade80">· 64% ·</span> Taxi Driver
         </p>
         <p style="font-size:13px;color:var(--faint)">crime &amp; tragédia moral ligam os dois rapidinho.</p>
       </div>
       <div class="card">
         <h3><span style="width:11px;height:11px;border-radius:50%;background:#f87171;display:inline-block"></span>Rota mais longa · 3 saltos</h3>
         <p style="font-size:15px;line-height:1.9">
-          Batman <span style="color:#f87171">—49%—</span> Better Call Saul <span style="color:#f87171">—64%—</span> Coringa <span style="color:#f87171">—92%—</span> Taxi Driver
+          Batman <span style="color:#f87171">· 49% ·</span> Better Call Saul <span style="color:#f87171">· 64% ·</span> Coringa <span style="color:#f87171">· 92% ·</span> Taxi Driver
         </p>
         <p style="font-size:13px;color:var(--faint)">passa por Coringa, quase idêntico a Taxi Driver (92%).</p>
       </div>
@@ -388,7 +388,7 @@ A = [ <span class="c-fn">dijkstra</span>(a, b) ]
 
   <!-- 10 · CONCEITOS + POOL + DISTANTE -->
   <section class="slide">
-    <div class="kicker">Pilar 4 — Mais algoritmos</div>
+    <div class="kicker">Pilar 4: Mais algoritmos</div>
     <h2>Conceitos, pool e a obra <span class="grad">mais distante</span></h2>
     <div class="cols3">
       <div class="card"><h3>Grafo de conceitos</h3>
@@ -410,14 +410,14 @@ A = [ <span class="c-fn">dijkstra</span>(a, b) ]
       <div>
         <ul class="feat">
           <li><span class="dot"></span><b>Force-directed layout</b> (d3-force): repulsão, molas nas arestas (rigidez ∝ similaridade), colisão e gravidade ajustável.</li>
-          <li><span class="dot"></span><b>Vue 3 + Vite</b> — interface reativa; render do grafo em <b>SVG</b>.</li>
-          <li><span class="dot"></span>Dados <b>100% locais</b> — roda offline, sem API.</li>
+          <li><span class="dot"></span><b>Vue 3 + Vite</b>: interface reativa; render do grafo em <b>SVG</b>.</li>
+          <li><span class="dot"></span>Dados <b>100% locais</b>: roda offline, sem API.</li>
         </ul>
       </div>
       <div>
         <ul class="feat">
           <li><span class="dot"></span>Busca, favoritos, lista e histórico (localStorage).</li>
-          <li><span class="dot"></span><b>Responsivo</b> — no celular, segurar um nó o joga na pool.</li>
+          <li><span class="dot"></span><b>Responsivo</b>: no celular, segurar um nó o joga na pool.</li>
           <li><span class="dot"></span>No ar 24/7: <b>systemd</b> + túnel <b>Cloudflare</b> em VPS.</li>
         </ul>
         <div class="formula" style="font-size:15px">metegraph.gabriwar.xyz</div>
@@ -427,12 +427,12 @@ A = [ <span class="c-fn">dijkstra</span>(a, b) ]
 
   <!-- DEEP DIVE A · DECISÕES DE MODELAGEM -->
   <section class="slide">
-    <div class="kicker">Aprofundamento — por que funciona</div>
+    <div class="kicker">Aprofundamento: por que funciona</div>
     <h2>Decisões de modelagem (e o <span class="accent">porquê</span>)</h2>
     <div class="cols3">
       <div class="card"><h3>Overlap, não Jaccard</h3>
         <p>Usamos <code>|A∩B| / min(|A|,|B|)</code> em vez de Jaccard <code>|A∩B|/|A∪B|</code>.
-        O overlap vai a <b>1 quando um conjunto contém o outro</b> — dá notas altas e fáceis de explicar
+        O overlap vai a <b>1 quando um conjunto contém o outro</b>: dá notas altas e fáceis de explicar
         ("3 de 3 temas em comum") e não pune obras com nº de atributos diferente.</p></div>
       <div class="card"><h3>Pesos por dimensão</h3>
         <p><b>Gêneros 0,30 · Temas 0,30 · Tom 0,20 · Ambientação 0,20.</b>
@@ -440,26 +440,26 @@ A = [ <span class="c-fn">dijkstra</span>(a, b) ]
         Soma = 1 ⇒ score sempre em <code>[0,1]</code>, comparável entre pares.</p></div>
       <div class="card"><h3>Limiar 0,45</h3>
         <p>Abaixo disso o grafo vira <b>novelo</b> (arestas fracas, sem sentido); acima, ele
-        <b>fragmenta</b> em ilhas. 0,45 mantém ~3.386 arestas e um <b>componente conexo</b> grande —
-        garante que quase todo par tem caminho.</p></div>
+        <b>fragmenta</b> em ilhas. 0,45 mantém ~3.386 arestas e um <b>componente conexo</b> grande,
+        garantindo que quase todo par tem caminho.</p></div>
     </div>
     <p style="margin-top:18px;font-size:14px">Consequência central: como cada aresta guarda o <b>breakdown</b> por dimensão,
-    nenhuma recomendação é caixa-preta — toda nota é uma soma auditável.</p>
+    nenhuma recomendação é caixa-preta: toda nota é uma soma auditável.</p>
   </section>
 
   <!-- DEEP DIVE B · COMPLEXIDADE -->
   <section class="slide">
-    <div class="kicker">Aprofundamento — custo computacional</div>
+    <div class="kicker">Aprofundamento: custo computacional</div>
     <h2>Complexidade dos <span class="accent">algoritmos</span></h2>
     <div class="cols">
       <ul class="feat" style="font-size:15px">
-        <li><span class="dot"></span><b>Construção do grafo:</b> <code>O(V²·d)</code> — todos os pares × atributos (~42k pares, 1×).</li>
+        <li><span class="dot"></span><b>Construção do grafo:</b> <code>O(V²·d)</code>: todos os pares × atributos (~42k pares, 1×).</li>
         <li><span class="dot"></span><b>Vizinhos (related/least):</b> <code>O(V·d + V log V)</code> por consulta.</li>
         <li><span class="dot"></span><b>Dijkstra:</b> <code>O(V²)</code> nesta versão (seleção por varredura); com heap seria <code>O(E log V)</code>.</li>
       </ul>
       <ul class="feat" style="font-size:15px">
         <li><span class="dot"></span><b>Yen (3 rotas):</b> ≈ <code>K</code> execuções de Dijkstra (K=18).</li>
-        <li><span class="dot"></span><b>Co-ocorrência:</b> <code>O(V·t²)</code> — t = atributos por obra.</li>
+        <li><span class="dot"></span><b>Co-ocorrência:</b> <code>O(V·t²)</code>: t = atributos por obra.</li>
         <li><span class="dot"></span><b>Pool / mais distante:</b> <code>O(V·|S|)</code> e <code>O(V·d)</code>.</li>
         <li><span class="dot"></span><b>Layout (por tick):</b> <code>O(V log V)</code> via Barnes-Hut.</li>
       </ul>
@@ -470,33 +470,58 @@ A = [ <span class="c-fn">dijkstra</span>(a, b) ]
 
   <!-- DEEP DIVE C · FORCE LAYOUT -->
   <section class="slide">
-    <div class="kicker">Aprofundamento — visualização</div>
+    <div class="kicker">Aprofundamento: visualização</div>
     <h2>Force-directed layout: <span class="accent">física</span> emergente</h2>
-    <div class="cols">
-      <div>
-        <p>Não há coordenadas fixas. As posições <b>emergem</b> de uma simulação física (d3-force):</p>
-        <ul class="feat" style="font-size:15px;margin-top:8px">
-          <li><span class="dot"></span><b>Repulsão</b> (forceManyBody): todo nó empurra os outros — tipo Coulomb, aproximado por <b>quadtree Barnes-Hut</b>.</li>
-          <li><span class="dot"></span><b>Molas</b> (forceLink): arestas puxam; comprimento ∝ <code>(1−sim)</code>, rigidez ∝ <code>sim</code> ⇒ similares ficam <b>perto</b>.</li>
-          <li><span class="dot"></span><b>Colisão</b> + <b>gravidade central</b> (forceX/Y, ajustável) seguram o conjunto.</li>
-        </ul>
+    <div class="cols" style="align-items:stretch">
+      <div class="card" style="display:flex;flex-direction:column;gap:10px;padding:16px 18px">
+        <div style="font-size:12.5px;color:var(--faint)">▶ exemplo ao vivo: os nós se agrupam sozinhos</div>
+        <svg id="fsim" viewBox="0 0 480 320" style="width:100%;flex:1;min-height:230px"></svg>
+        <div class="legend" style="margin:0;background:none;border:none;padding:0">
+          <span><i style="background:var(--filme)"></i>Filme</span>
+          <span><i style="background:var(--serie)"></i>Série</span>
+          <span><i style="background:var(--livro)"></i>Livro</span>
+          <span><i style="background:var(--anime)"></i>Anime</span>
+        </div>
       </div>
-      <div>
-        <div class="formula" style="font-size:15px">a cada tick:<br>
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <p style="font-size:14px;margin:0">Sem coordenadas fixas: as posições <b>emergem</b> de 3 forças (d3-force).</p>
+        <ul class="feat" style="font-size:14px;margin:0">
+          <li><span class="dot" style="background:#f87171"></span><b>Repulsão</b>: todo nó empurra os outros (Barnes-Hut). <span style="color:#f87171">↤ ●  ● ↦</span></li>
+          <li><span class="dot" style="background:#4ade80"></span><b>Molas</b>: arestas puxam; curtas &amp; rígidas se a similaridade é alta. <span style="color:#4ade80">●–––●</span></li>
+          <li><span class="dot" style="background:var(--accent)"></span><b>Gravidade + colisão</b>: centralizam e evitam sobreposição. <span style="color:var(--accent)">→ ⌖ ←</span></li>
+        </ul>
+        <div class="formula" style="font-size:13px;margin:0;padding:14px 16px">a cada tick:<br>
         &nbsp;&nbsp;v ← (v + Σforças) · (1 − atrito)<br>
-        &nbsp;&nbsp;pos ← pos + v<br>
-        &nbsp;&nbsp;alpha ← alpha · decay<br>
-        <small>para quando alpha → 0 (esfria)</small></div>
-        <p style="font-size:14px">Por que funciona: o sistema busca um <b>mínimo de energia</b> em que nós parecidos
-        se agrupam e arestas fortes ficam curtas — um "mapa" legível sem layout manual.
-        Render só ocorre <b>enquanto há movimento</b>; ao assentar, custo zero.</p>
+        &nbsp;&nbsp;pos ← pos + v ;&nbsp; alpha ← alpha · decay<br>
+        <small>esfria até alpha → 0</small></div>
+        <p style="font-size:13px;margin:0">Busca um <b>mínimo de energia</b>: parecidos se agrupam, arestas fortes ficam curtas, mapa legível sem layout manual.</p>
       </div>
     </div>
+    <script>
+    (function(){
+      var W=480,H=320,svg=document.getElementById('fsim'),ns='http://www.w3.org/2000/svg';
+      var col=['#22c55e','#22c55e','#22c55e','#22c55e','#eab308','#3b82f6','#ef4444','#a855f7'];
+      var N=col.map(function(c,i){return {c:c,x:W/2+Math.cos(i*2.4)*70+(Math.random()-.5)*30,y:H/2+Math.sin(i*2.4)*70+(Math.random()-.5)*30,vx:0,vy:0};});
+      var E=[[0,1,52],[0,2,52],[1,2,52],[2,3,52],[3,0,52],[4,5,52],[5,6,52],[6,7,52],[7,4,52],[0,4,150]];
+      var lines=E.map(function(){var l=document.createElementNS(ns,'line');l.setAttribute('stroke','#36415f');l.setAttribute('stroke-width','2');svg.appendChild(l);return l;});
+      var dots=N.map(function(n){var c=document.createElementNS(ns,'circle');c.setAttribute('r','11');c.setAttribute('fill',n.c);svg.appendChild(c);return c;});
+      function step(){
+        var i,j,dx,dy,d,f,a,b;
+        for(i=0;i<N.length;i++)for(j=i+1;j<N.length;j++){dx=N[i].x-N[j].x;dy=N[i].y-N[j].y;d=Math.sqrt(dx*dx+dy*dy)||1;f=1500/(d*d);N[i].vx+=dx/d*f;N[i].vy+=dy/d*f;N[j].vx-=dx/d*f;N[j].vy-=dy/d*f;}
+        for(i=0;i<E.length;i++){a=N[E[i][0]];b=N[E[i][1]];dx=b.x-a.x;dy=b.y-a.y;d=Math.sqrt(dx*dx+dy*dy)||1;f=(d-E[i][2])*0.01;a.vx+=dx/d*f;a.vy+=dy/d*f;b.vx-=dx/d*f;b.vy-=dy/d*f;}
+        for(i=0;i<N.length;i++){var n=N[i];n.vx+=(W/2-n.x)*0.004+(Math.random()-.5)*0.7;n.vy+=(H/2-n.y)*0.004+(Math.random()-.5)*0.7;n.vx*=0.86;n.vy*=0.86;n.x+=n.vx;n.y+=n.vy;n.x=Math.max(14,Math.min(W-14,n.x));n.y=Math.max(14,Math.min(H-14,n.y));}
+        for(i=0;i<E.length;i++){lines[i].setAttribute('x1',N[E[i][0]].x);lines[i].setAttribute('y1',N[E[i][0]].y);lines[i].setAttribute('x2',N[E[i][1]].x);lines[i].setAttribute('y2',N[E[i][1]].y);}
+        for(i=0;i<N.length;i++){dots[i].setAttribute('cx',N[i].x);dots[i].setAttribute('cy',N[i].y);}
+        requestAnimationFrame(step);
+      }
+      step();
+    })();
+    </script>
   </section>
 
   <!-- DEEP DIVE D · ESCALA -->
   <section class="slide">
-    <div class="kicker">Aprofundamento — escala &amp; desempenho</div>
+    <div class="kicker">Aprofundamento: escala &amp; desempenho</div>
     <h2>Por que <span class="accent">subgrafos</span>, e não o grafo inteiro</h2>
     <div class="cols">
       <div>
@@ -521,7 +546,7 @@ A = [ <span class="c-fn">dijkstra</span>(a, b) ]
 
   <!-- DEEP DIVE E · ARQUITETURA -->
   <section class="slide">
-    <div class="kicker">Aprofundamento — dados &amp; arquitetura</div>
+    <div class="kicker">Aprofundamento: dados &amp; arquitetura</div>
     <h2>Do dado ao <span class="accent">deploy</span></h2>
     <div class="cols3">
       <div class="card"><h3>Vocabulário controlado</h3>
@@ -533,7 +558,7 @@ A = [ <span class="c-fn">dijkstra</span>(a, b) ]
       <div class="card"><h3>Estado do usuário</h3>
         <p>Favoritos, lista e histórico em <b>localStorage</b>, saneados contra o catálogo a cada carga (auto-corrige).</p></div>
       <div class="card"><h3>Publicação</h3>
-        <p>VPS com serviço <b>systemd</b> (Restart=always) atrás de um <b>túnel Cloudflare</b> — no ar 24/7.</p></div>
+        <p>VPS com serviço <b>systemd</b> (Restart=always) atrás de um <b>túnel Cloudflare</b>: no ar 24/7.</p></div>
       <div class="card"><h3>Explicabilidade</h3>
         <p>O <b>breakdown</b> viaja em cada aresta e caminho: a interface sempre mostra <b>o que</b> e <b>quanto</b> liga duas obras.</p></div>
     </div>
@@ -541,17 +566,17 @@ A = [ <span class="c-fn">dijkstra</span>(a, b) ]
 
   <!-- REQUISITOS DO EDITAL -->
   <section class="slide">
-    <div class="kicker">Defesa — alinhamento ao edital</div>
+    <div class="kicker">Defesa: alinhamento ao edital</div>
     <h2>Requisitos do projeto <span class="accent">atendidos</span></h2>
     <div class="cols">
       <ul class="feat" style="font-size:15px">
-        <li><span class="dot" style="background:#22c55e"></span><b>Problema real</b> — recomendação por interesses em comum (exemplo do próprio roteiro).</li>
-        <li><span class="dot" style="background:#22c55e"></span><b>Modelagem clara</b> — vértices = obras, arestas = similaridade.</li>
+        <li><span class="dot" style="background:#22c55e"></span><b>Problema real</b>: recomendação por interesses em comum (exemplo do próprio roteiro).</li>
+        <li><span class="dot" style="background:#22c55e"></span><b>Modelagem clara</b>: vértices = obras, arestas = similaridade.</li>
         <li><span class="dot" style="background:#22c55e"></span><b>Não-orientado e ponderado</b> (peso = similaridade).</li>
         <li><span class="dot" style="background:#22c55e"></span><b>Lista de adjacência</b> como estrutura de dados.</li>
       </ul>
       <ul class="feat" style="font-size:15px">
-        <li><span class="dot" style="background:#22c55e"></span><b>Menor caminho — Dijkstra</b> (+ Yen para K rotas).</li>
+        <li><span class="dot" style="background:#22c55e"></span><b>Menor caminho com Dijkstra</b> (+ Yen para K rotas).</li>
         <li><span class="dot" style="background:#22c55e"></span><b>Processa inteligência</b>, não só desenha o grafo.</li>
         <li><span class="dot" style="background:#22c55e"></span><b>Interface web</b> publicada e no ar 24/7.</li>
         <li><span class="dot" style="background:#22c55e"></span><b>Equipe de 8</b> com divisão clara de papéis.</li>
@@ -563,24 +588,24 @@ A = [ <span class="c-fn">dijkstra</span>(a, b) ]
   <!-- 12 · DIVISÃO DE TRABALHO (8) -->
   <section class="slide">
     <div class="kicker">Equipe</div>
-    <h2>Divisão do trabalho — <span class="accent">8 responsáveis</span></h2>
+    <h2>Divisão do trabalho: <span class="accent">8 responsáveis</span></h2>
     <div class="team">
       <div class="member"><div class="role">Tema, justificativa &amp; curadoria do acervo</div>
-        <div class="desc">Catálogo de ~290 obras e o vocabulário de atributos.</div><div class="who">resp.: <b>[ nome ]</b></div></div>
+        <div class="desc">Catálogo de ~290 obras e o vocabulário de atributos.</div><div class="who">resp.: <b>Arthur Cézar Lima Silva</b></div></div>
       <div class="member"><div class="role">Modelagem da similaridade</div>
-        <div class="desc">Dimensões, pesos e coeficiente de sobreposição.</div><div class="who">resp.: <b>[ nome ]</b></div></div>
+        <div class="desc">Dimensões, pesos e coeficiente de sobreposição.</div><div class="who">resp.: <b>Caleb Cunha Samora</b></div></div>
       <div class="member"><div class="role">Construção do grafo</div>
-        <div class="desc">Nós, arestas, limiar e estruturas de dados.</div><div class="who">resp.: <b>[ nome ]</b></div></div>
+        <div class="desc">Nós, arestas, limiar e estruturas de dados.</div><div class="who">resp.: <b>Rhyan Marllon Alves Silva</b></div></div>
       <div class="member"><div class="role">Subgrafo ego &amp; exploração</div>
-        <div class="desc">Vizinhança top-K, expansão e sementes.</div><div class="who">resp.: <b>[ nome ]</b></div></div>
+        <div class="desc">Vizinhança top-K, expansão e sementes.</div><div class="who">resp.: <b>Gabriel Duarte Guerra</b></div></div>
       <div class="member"><div class="role">Caminhos: Dijkstra + Yen</div>
-        <div class="desc">Menor caminho e as 3 rotas (curta/média/longa).</div><div class="who">resp.: <b>[ nome ]</b></div></div>
+        <div class="desc">Menor caminho e as 3 rotas (curta/média/longa).</div><div class="who">resp.: <b>Rafael Duarte Guerra</b></div></div>
       <div class="member"><div class="role">Grafo de conceitos</div>
-        <div class="desc">Co-ocorrência, poda top-K e frequência.</div><div class="who">resp.: <b>[ nome ]</b></div></div>
+        <div class="desc">Co-ocorrência, poda top-K e frequência.</div><div class="who">resp.: <b>Arthur Henrique Rodrigues dos Santos</b></div></div>
       <div class="member"><div class="role">Pool &amp; obra mais distante</div>
-        <div class="desc">Ranking por média e argmin + caminho.</div><div class="who">resp.: <b>[ nome ]</b></div></div>
+        <div class="desc">Ranking por média e argmin + caminho.</div><div class="who">resp.: <b>Thalisson Pereira Duarte</b></div></div>
       <div class="member"><div class="role">Visualização, UI &amp; deploy</div>
-        <div class="desc">d3-force, Vue, responsivo e publicação.</div><div class="who">resp.: <b>[ nome ]</b></div></div>
+        <div class="desc">d3-force, Vue, responsivo e publicação.</div><div class="who">resp.: <b>Arthur Felipe Lemos Magalhães</b></div></div>
     </div>
   </section>
 
@@ -588,7 +613,7 @@ A = [ <span class="c-fn">dijkstra</span>(a, b) ]
   <section class="slide" style="padding:4vh 4vw;justify-content:flex-start">
     <div style="display:flex;align-items:baseline;gap:14px;margin:1vh 0 12px;flex-wrap:wrap">
       <div class="kicker" style="margin:0">Demo ao vivo</div>
-      <h2 style="margin:0;font-size:clamp(20px,2.6vw,32px)">Grafo interativo — <span class="accent">aqui mesmo</span></h2>
+      <h2 style="margin:0;font-size:clamp(20px,2.6vw,32px)">Grafo interativo, <span class="accent">aqui mesmo</span></h2>
       <span style="margin-left:auto;font-size:12px;color:var(--faint)">clique nos nós · arraste · segure p/ pool</span>
     </div>
     <iframe src="/" title="metegraph ao vivo" loading="lazy"
@@ -599,7 +624,7 @@ A = [ <span class="c-fn">dijkstra</span>(a, b) ]
   <section class="slide cover">
     <div class="kicker">Demonstração</div>
     <h1 class="grad" style="max-width:18ch">Obrigado.<br>Vamos ao grafo.</h1>
-    <p style="margin-top:6px">Quatro pilares — tema, modelagem, estruturas e algoritmos — num só sistema interativo.</p>
+    <p style="margin-top:6px">Quatro pilares (tema, modelagem, estruturas e algoritmos) num só sistema interativo.</p>
     <div class="url" style="font-size:20px;margin-top:22px"><b class="accent">metegraph.gabriwar.xyz</b></div>
   </section>
 
