@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>metegraph · Apresentação</title>
+<style>
+  :root{
+    --bg:#0a0d14; --panel:#121723; --panel2:#161c2a; --border:#232b3a;
+    --text:#e6eaf2; --dim:#9aa6bd; --faint:#5f6b82; --accent:#7c8cf8; --accent2:#a855f7;
+    --filme:#ef4444; --serie:#eab308; --livro:#22c55e; --anime:#3b82f6;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    background:var(--bg); color:var(--text);
+    font-family:'Inter',system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+    -webkit-font-smoothing:antialiased; overflow:hidden;
+  }
+  .deck{height:100vh;width:100vw;overflow:hidden;position:relative}
+  .slides{height:100%;display:flex;transition:transform .45s cubic-bezier(.4,0,.2,1)}
+  .slide{
+    min-width:100vw;height:100vh;flex-shrink:0;
+    display:flex;flex-direction:column;justify-content:center;
+    padding:6vh 8vw; position:relative;
+  }
+  h1{font-size:clamp(34px,5vw,68px);line-height:1.05;letter-spacing:-1.5px;margin-bottom:18px}
+  h2{font-size:clamp(26px,3.4vw,44px);line-height:1.1;letter-spacing:-1px;margin-bottom:26px}
+  h2 .pill{font-size:14px;vertical-align:middle}
+  p{font-size:clamp(15px,1.5vw,20px);color:var(--dim);line-height:1.6;max-width:60ch}
+  b,strong{color:var(--text);font-weight:600}
+  code{font-family:'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace}
+  .accent{color:var(--accent)}
+  .grad{background:linear-gradient(120deg,var(--accent),var(--accent2));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .kicker{font-size:13px;letter-spacing:.22em;text-transform:uppercase;color:var(--accent);font-weight:700;margin-bottom:16px}
+  .pill{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;
+    padding:4px 11px;border-radius:999px;background:var(--panel2);border:1px solid var(--border);color:var(--accent2)}
+
+  .cols{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:8px}
+  .cols3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:8px}
+  .card{background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:22px 24px}
+  .card h3{font-size:clamp(17px,1.7vw,22px);margin-bottom:10px;display:flex;align-items:center;gap:10px}
+  .card p{font-size:clamp(13px,1.25vw,16px)}
+  .card .num{width:28px;height:28px;border-radius:8px;background:var(--panel2);border:1px solid var(--border);
+    display:grid;place-items:center;font-size:13px;font-weight:800;color:var(--accent);flex-shrink:0}
+
+  pre{background:#0c1019;border:1px solid var(--border);border-radius:14px;padding:18px 20px;overflow:auto;margin-top:14px}
+  pre code{font-size:clamp(12px,1.15vw,15px);line-height:1.65;color:#c9d4ea}
+  .c-key{color:#c792ea}.c-fn{color:#82aaff}.c-str{color:#c3e88d}.c-num{color:#f78c6c}.c-com{color:#5f6b82;font-style:italic}
+
+  ul.feat{list-style:none;margin-top:10px;display:flex;flex-direction:column;gap:13px}
+  ul.feat li{display:flex;gap:13px;font-size:clamp(14px,1.4vw,18px);color:var(--dim);line-height:1.45;align-items:flex-start}
+  ul.feat li .dot{flex-shrink:0;width:9px;height:9px;border-radius:50%;background:var(--accent);margin-top:8px}
+  ul.feat li b{color:var(--text)}
+
+  .stats{display:flex;gap:34px;margin-top:26px;flex-wrap:wrap}
+  .stat .v{font-size:clamp(30px,4vw,52px);font-weight:800;letter-spacing:-1px;line-height:1}
+  .stat .l{font-size:13px;color:var(--faint);margin-top:6px;text-transform:uppercase;letter-spacing:.08em}
+
+  .legend{display:flex;gap:18px;margin-top:22px;flex-wrap:wrap}
+  .legend span{display:inline-flex;align-items:center;gap:8px;font-size:14px;color:var(--dim)}
+  .legend i{width:12px;height:12px;border-radius:50%}
+
+  .team{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:10px}
+  .member{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:16px 16px 18px;border-top:3px solid var(--accent)}
+  .member .role{font-size:13px;font-weight:700;color:var(--text);line-height:1.25;min-height:2.4em}
+  .member .desc{font-size:11.5px;color:var(--dim);margin-top:8px;line-height:1.4}
+  .member .who{font-size:11px;color:var(--faint);margin-top:12px;border-top:1px dashed var(--border);padding-top:9px}
+  .member .who b{color:var(--accent)}
+
+  .formula{font-size:clamp(16px,2vw,28px);background:var(--panel);border:1px solid var(--border);
+    border-radius:14px;padding:20px 26px;margin:18px 0;font-family:ui-monospace,monospace;color:var(--text);line-height:1.7}
+  .formula small{color:var(--faint);font-size:.6em}
+
+  /* navegação */
+  .bar{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--accent),var(--accent2));z-index:10;transition:width .45s}
+  .hud{position:fixed;bottom:22px;right:28px;font-size:13px;color:var(--faint);z-index:10;font-variant-numeric:tabular-nums}
+  .hud b{color:var(--dim)}
+  .brandmark{position:fixed;bottom:22px;left:28px;font-size:13px;color:var(--faint);z-index:10;letter-spacing:.04em}
+  .nav{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);display:flex;gap:8px;z-index:10}
+  .nav button{width:34px;height:34px;border-radius:9px;background:var(--panel);border:1px solid var(--border);
+    color:var(--dim);font-size:15px;cursor:pointer;transition:.15s}
+  .nav button:hover{color:var(--text);border-color:var(--accent)}
+  .hint{position:fixed;top:18px;right:24px;font-size:11px;color:var(--faint);z-index:10}
+
+  /* cover */
+  .cover{align-items:flex-start}
+  .logo{font-size:clamp(54px,9vw,120px);font-weight:800;letter-spacing:-4px;line-height:1}
+  .logo .e{color:var(--serie)}
+  .cover .sub{font-size:clamp(16px,1.8vw,24px);color:var(--dim);margin-top:10px}
+  .cover .url{margin-top:22px;font-family:ui-monospace,monospace;font-size:15px;color:var(--accent)}
+  .cnodes{position:absolute;right:6vw;top:50%;transform:translateY(-50%);opacity:.9}
+  @media(max-width:760px){
+    .cols,.cols3{grid-template-columns:1fr}.team{grid-template-columns:1fr 1fr}.cnodes{display:none}
+    .slide{padding:7vh 7vw}
+  }
+</style>
+</head>
+<body>
+<div class="bar" id="bar"></div>
+<div class="hint">use ← →  ·  F = tela cheia</div>
+<div class="brandmark">metegraph</div>
+<div class="hud"><b id="cur">1</b> / <span id="tot">13</span></div>
+<div class="nav"><button id="prev">‹</button><button id="next">›</button></div>
+
+<div class="deck">
+<div class="slides" id="slides">
+
+  <!-- 1 · CAPA -->
+  <section class="slide cover">
+    <svg class="cnodes" width="360" height="360" viewBox="0 0 360 360">
+      <g stroke="#2b3450" stroke-width="2">
+        <line x1="180" y1="180" x2="70" y2="80"/><line x1="180" y1="180" x2="300" y2="90"/>
+        <line x1="180" y1="180" x2="80" y2="290"/><line x1="180" y1="180" x2="300" y2="280"/>
+        <line x1="180" y1="180" x2="300" y2="180"/><line x1="70" y1="80" x2="300" y2="90"/>
+        <line x1="80" y1="290" x2="300" y2="280"/>
+      </g>
+      <circle cx="70" cy="80" r="20" fill="var(--filme)"/>
+      <circle cx="300" cy="90" r="20" fill="var(--serie)"/>
+      <circle cx="80" cy="290" r="20" fill="var(--livro)"/>
+      <circle cx="300" cy="280" r="20" fill="var(--anime)"/>
+      <circle cx="300" cy="180" r="16" fill="var(--accent2)"/>
+      <circle cx="180" cy="180" r="30" fill="var(--accent)"/>
+    </svg>
+    <div class="kicker">Teoria dos Grafos · Trabalho Final</div>
+    <div class="logo">m<span class="e">e</span>tegraph</div>
+    <div class="sub">Mapa de Engajamento Transmídia — recomendação <b>explicável</b> por grafos</div>
+    <div class="url">metegraph.gabriwar.xyz</div>
+    <p style="margin-top:26px;font-size:14px;color:var(--faint)">Apresentação · equipe de 8 integrantes</p>
+  </section>
+
+  <!-- 2 · PILAR 1: TEMA -->
+  <section class="slide">
+    <div class="kicker">Pilar 1 — Tema &amp; Justificativa</div>
+    <h2>Por que recomendar com <span class="grad">grafos</span>?</h2>
+    <div class="cols">
+      <div>
+        <p><b>Tema.</b> Um explorador de obras — filmes, séries, livros e animes — que conecta
+        títulos por <b>semelhança de conteúdo</b> e deixa o usuário navegar essas conexões.</p>
+        <p style="margin-top:16px"><b>O problema.</b> Recomendadores comuns são <b>caixas-pretas</b>:
+        dizem "você vai gostar disto" sem dizer <i>por quê</i>.</p>
+      </div>
+      <div>
+        <p><b>Justificativa.</b> Modelar o acervo como um <b>grafo</b> torna a recomendação
+        <b>transparente e auditável</b>: cada conexão é uma conta que dá pra abrir, e a navegação
+        vira um problema clássico de grafos (vizinhança, caminhos, distância).</p>
+        <div class="legend">
+          <span><i style="background:var(--filme)"></i>Filme</span>
+          <span><i style="background:var(--serie)"></i>Série</span>
+          <span><i style="background:var(--livro)"></i>Livro</span>
+          <span><i style="background:var(--anime)"></i>Anime</span>
+        </div>
+      </div>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="v grad">290</div><div class="l">obras (nós)</div></div>
+      <div class="stat"><div class="v grad">3.386</div><div class="l">conexões (arestas)</div></div>
+      <div class="stat"><div class="v grad">4</div><div class="l">tipos de mídia</div></div>
+    </div>
+  </section>
+
+  <!-- 3 · O QUE O SISTEMA FAZ -->
+  <section class="slide">
+    <div class="kicker">Visão geral</div>
+    <h2>O que dá pra fazer no <span class="accent">metegraph</span></h2>
+    <div class="cols3">
+      <div class="card"><h3>Grafo de obras</h3><p>Começa por obras-semente; clicar <b>foca e expande</b> os vizinhos mais parecidos.</p></div>
+      <div class="card"><h3>Por que conectados</h3><p>Clicar numa aresta abre o <b>detalhamento</b> da similaridade dimensão por dimensão.</p></div>
+      <div class="card"><h3>Caminho entre 2 obras</h3><p>3 rotas — <b>curta, média e longa</b> — mostrando as pontes entre dois títulos.</p></div>
+      <div class="card"><h3>Obra mais distante</h3><p>A <b>menos relacionada</b> + o caminho que mesmo assim liga as duas.</p></div>
+      <div class="card"><h3>Grafo de conceitos</h3><p>Nós = palavras-chave; arestas = <b>co-ocorrência</b>. O "DNA" do acervo.</p></div>
+      <div class="card"><h3>Pool</h3><p>Junta obras e revela as <b>mais parecidas com o conjunto</b>.</p></div>
+    </div>
+  </section>
+
+  <!-- 4 · PILAR 2: MODELAGEM (similaridade) -->
+  <section class="slide">
+    <div class="kicker">Pilar 2 — Modelagem computacional</div>
+    <h2>Da obra ao <span class="grad">nó</span>: atributos e similaridade</h2>
+    <div class="cols">
+      <div>
+        <p>Cada obra é descrita por atributos em <b>4 dimensões</b>:</p>
+        <ul class="feat">
+          <li><span class="dot" style="background:#f472b6"></span><b>Gêneros</b> — fantasia, ficção-científica, crime…</li>
+          <li><span class="dot" style="background:#a855f7"></span><b>Temas</b> — poder, vingança, identidade…</li>
+          <li><span class="dot" style="background:#38bdf8"></span><b>Tom</b> — sombrio, épico, melancólico…</li>
+          <li><span class="dot" style="background:#34d399"></span><b>Ambientação</b> — medieval, futuro, cidade…</li>
+        </ul>
+      </div>
+      <div>
+        <p>A similaridade entre duas obras é a <b>sobreposição de atributos</b> por dimensão,
+        ponderada por peso — usando o <b>coeficiente de sobreposição</b>:</p>
+        <div class="formula">overlap(A,B) = |A ∩ B| / min(|A|,|B|)</div>
+        <div class="formula">sim = Σ <small>dim</small> peso<small>dim</small> · overlap<small>dim</small><br>
+        <small>gêneros 0,30 · temas 0,30 · tom 0,20 · ambientação 0,20</small></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5 · MODELAGEM (o grafo) -->
+  <section class="slide">
+    <div class="kicker">Pilar 2 — Modelagem computacional</div>
+    <h2>O acervo vira um <span class="grad">grafo ponderado</span></h2>
+    <div class="cols">
+      <div>
+        <ul class="feat">
+          <li><span class="dot"></span><b>Vértices (V):</b> as ~290 obras.</li>
+          <li><span class="dot"></span><b>Arestas (E):</b> par de obras com <b>sim ≥ 0,45</b> (limiar).</li>
+          <li><span class="dot"></span><b>Peso:</b> a própria similaridade (0–1) na aresta.</li>
+          <li><span class="dot"></span><b>Não-direcionado</b> — semelhança é simétrica.</li>
+          <li><span class="dot"></span>Construído por <b>varredura de todos os pares</b> O(V²).</li>
+        </ul>
+      </div>
+      <div>
+<pre><code><span class="c-com">// para cada par de obras, cria aresta se passar do limiar</span>
+<span class="c-key">for</span> i &lt; n:
+  <span class="c-key">for</span> j &gt; i:
+    s = <span class="c-fn">similarity</span>(W[i], W[j])
+    <span class="c-key">if</span> s.score &gt;= <span class="c-num">0.45</span>:
+      links.<span class="c-fn">push</span>({ source, target,
+                  score: s.score,
+                  breakdown: s.breakdown })</code></pre>
+        <p style="font-size:14px;margin-top:14px">Cada aresta guarda o <b>breakdown</b> — quanto cada dimensão contribuiu — o que torna a recomendação explicável.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6 · PILAR 3: ESTRUTURAS DE DADOS -->
+  <section class="slide">
+    <div class="kicker">Pilar 3 — Estruturas de dados</div>
+    <h2>Como o grafo é <span class="grad">guardado</span></h2>
+    <div class="cols3">
+      <div class="card"><h3><span class="num">1</span>Lista de adjacência</h3>
+        <p><code>Map&lt;id, [{id, score}]&gt;</code> — vizinhos de cada nó. Base dos algoritmos de caminho. Memoizada (construída uma vez).</p></div>
+      <div class="card"><h3><span class="num">2</span>Lista de arestas</h3>
+        <p><code>[{source,target,score,breakdown}]</code> — usada para desenhar e para o "por quê".</p></div>
+      <div class="card"><h3><span class="num">3</span>Hash / Map</h3>
+        <p><code>WORKS_BY_ID</code> — acesso O(1) à obra por id. Catálogo como lista de objetos.</p></div>
+      <div class="card"><h3><span class="num">4</span>Set (conjuntos)</h3>
+        <p>Atributos por dimensão; <b>visitados</b> no Dijkstra; nós da pool; deduplicação de subgrafos.</p></div>
+      <div class="card"><h3><span class="num">5</span>Dicionário de co-ocorrência</h3>
+        <p><code>cooc["a|b"] = contagem</code> — frequência de pares de conceitos (grafo de conceitos).</p></div>
+      <div class="card"><h3><span class="num">6</span>Subgrafos sob demanda</h3>
+        <p>Ego, pool e rotas geram <b>grafos parciais</b> — só o necessário é materializado.</p></div>
+    </div>
+  </section>
+
+  <!-- 7 · PILAR 4: ALGORITMOS (overview) -->
+  <section class="slide">
+    <div class="kicker">Pilar 4 — Algoritmos de grafos</div>
+    <h2>Quais algoritmos <span class="grad">rodam por baixo</span></h2>
+    <div class="cols">
+      <ul class="feat">
+        <li><span class="dot"></span><b>Construção por similaridade</b> — all-pairs O(V²).</li>
+        <li><span class="dot"></span><b>Subgrafo ego</b> — vizinhança top-K de um nó (expansão).</li>
+        <li><span class="dot"></span><b>Dijkstra</b> — caminho de maior afinidade entre 2 obras.</li>
+      </ul>
+      <ul class="feat">
+        <li><span class="dot"></span><b>Yen (K-shortest paths)</b> — 3 rotas distintas.</li>
+        <li><span class="dot"></span><b>Co-ocorrência + poda top-K</b> — grafo de conceitos.</li>
+        <li><span class="dot"></span><b>Ranking por média / argmin</b> — pool e obra mais distante.</li>
+        <li><span class="dot"></span><b>Force-directed layout</b> — posicionamento (d3-force).</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 8 · DIJKSTRA -->
+  <section class="slide">
+    <div class="kicker">Pilar 4 — Algoritmo em foco</div>
+    <h2><span class="grad">Dijkstra</span> — o caminho mais "forte"</h2>
+    <div class="cols">
+      <div>
+        <p>Para conectar duas obras, buscamos o caminho que <b>passa pelas ligações mais fortes</b>.
+        Como Dijkstra minimiza custo, definimos o custo de cada aresta como o <b>inverso</b> da similaridade:</p>
+        <div class="formula">custo(aresta) = 1 − similaridade <small>(+ ε)</small></div>
+        <p style="font-size:14px">Assim, somar custos = preferir caminhos com elos mais parecidos. Complexidade <code>O(V²)</code> nesta implementação.</p>
+      </div>
+      <div>
+<pre><code><span class="c-key">function</span> <span class="c-fn">dijkstra</span>(src, dst):
+  dist[src] = <span class="c-num">0</span>;  visited = <span class="c-fn">Set</span>()
+  <span class="c-key">while</span> existe não-visitado:
+    u = nó de <span class="c-key">menor</span> dist
+    <span class="c-key">if</span> u == dst: <span class="c-key">break</span>
+    visited.<span class="c-fn">add</span>(u)
+    <span class="c-key">for</span> (v, score) <span class="c-key">in</span> adj[u]:
+      nd = dist[u] + (<span class="c-num">1</span> - score)
+      <span class="c-key">if</span> nd &lt; dist[v]: dist[v]=nd; prev[v]=u
+  <span class="c-key">return</span> <span class="c-fn">reconstruir</span>(prev, dst)</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9 · YEN K-SHORTEST -->
+  <section class="slide">
+    <div class="kicker">Pilar 4 — Algoritmo em foco</div>
+    <h2><span class="grad">Yen</span> — três rotas: curta, média e longa</h2>
+    <div class="cols">
+      <div>
+        <p>O algoritmo de <b>Yen</b> acha os <b>K menores caminhos sem repetir nó</b>, reaplicando
+        Dijkstra a partir de "nós de desvio" (spur). Geramos K=18 candidatos e escolhemos
+        <b>3 por comprimento</b>: a mais curta, uma intermediária e a mais longa.</p>
+        <div class="legend">
+          <span><i style="background:#4ade80"></i>mais curta</span>
+          <span><i style="background:#facc15"></i>média</span>
+          <span><i style="background:#f87171"></i>mais longa</span>
+        </div>
+        <p style="margin-top:16px;font-size:14px">Ex.: <b>Batman → Better Call Saul → Coringa → Taxi Driver</b>.
+        Cada salto mostra o que as duas obras compartilham.</p>
+      </div>
+      <div>
+<pre><code><span class="c-com">// Yen, em alto nível</span>
+A = [ <span class="c-fn">dijkstra</span>(a, b) ]
+<span class="c-key">for</span> k <span class="c-key">in</span> <span class="c-num">1</span>..K-1:
+  <span class="c-key">for</span> cada nó-desvio do caminho A[k-1]:
+    remove arestas/nós já usados
+    spur = <span class="c-fn">dijkstra</span>(desvio, b)
+    candidatos.<span class="c-fn">add</span>(raiz + spur)
+  A.<span class="c-fn">push</span>( menor candidato )
+<span class="c-key">return</span> escolher(curto, médio, longo)</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- 10 · CONCEITOS + POOL + DISTANTE -->
+  <section class="slide">
+    <div class="kicker">Pilar 4 — Mais algoritmos</div>
+    <h2>Conceitos, pool e a obra <span class="grad">mais distante</span></h2>
+    <div class="cols3">
+      <div class="card"><h3>Grafo de conceitos</h3>
+        <p>Conta a <b>co-ocorrência</b> de pares de atributos no acervo; mantém arestas acima de um limiar e <b>poda top-3</b> por nó (anti-novelo). Nó = conceito, tamanho = frequência.</p></div>
+      <div class="card"><h3>Pool (média)</h3>
+        <p>Dado um conjunto S de obras, ranqueia o resto por <b>similaridade média</b> a S:
+        <code>score(x)=avg<small> p∈S</small> sim(x,p)</code>.</p></div>
+      <div class="card"><h3>Obra mais distante</h3>
+        <p><b>argmin</b> da similaridade (a menos relacionada) que ainda seja <b>alcançável</b>, e então o caminho até ela via Yen.</p></div>
+    </div>
+    <p style="margin-top:20px;font-size:14px">Complexidades: co-ocorrência <code>O(V·t²)</code> (t = atributos por obra) · ranking/argmin <code>O(V²)</code> · Yen ≈ <code>K</code> execuções de Dijkstra.</p>
+  </section>
+
+  <!-- 11 · VISUALIZAÇÃO / STACK -->
+  <section class="slide">
+    <div class="kicker">Implementação</div>
+    <h2>Visualização &amp; <span class="grad">stack</span></h2>
+    <div class="cols">
+      <div>
+        <ul class="feat">
+          <li><span class="dot"></span><b>Force-directed layout</b> (d3-force): repulsão, molas nas arestas (rigidez ∝ similaridade), colisão e gravidade ajustável.</li>
+          <li><span class="dot"></span><b>Vue 3 + Vite</b> — interface reativa; render do grafo em <b>SVG</b>.</li>
+          <li><span class="dot"></span>Dados <b>100% locais</b> — roda offline, sem API.</li>
+        </ul>
+      </div>
+      <div>
+        <ul class="feat">
+          <li><span class="dot"></span>Busca, favoritos, lista e histórico (localStorage).</li>
+          <li><span class="dot"></span><b>Responsivo</b> — no celular, segurar um nó o joga na pool.</li>
+          <li><span class="dot"></span>No ar 24/7: <b>systemd</b> + túnel <b>Cloudflare</b> em VPS.</li>
+        </ul>
+        <div class="formula" style="font-size:15px">metegraph.gabriwar.xyz</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 12 · DIVISÃO DE TRABALHO (8) -->
+  <section class="slide">
+    <div class="kicker">Equipe</div>
+    <h2>Divisão do trabalho — <span class="accent">8 responsáveis</span></h2>
+    <div class="team">
+      <div class="member"><div class="role">Tema, justificativa &amp; curadoria do acervo</div>
+        <div class="desc">Catálogo de ~290 obras e o vocabulário de atributos.</div><div class="who">resp.: <b>[ nome ]</b></div></div>
+      <div class="member"><div class="role">Modelagem da similaridade</div>
+        <div class="desc">Dimensões, pesos e coeficiente de sobreposição.</div><div class="who">resp.: <b>[ nome ]</b></div></div>
+      <div class="member"><div class="role">Construção do grafo</div>
+        <div class="desc">Nós, arestas, limiar e estruturas de dados.</div><div class="who">resp.: <b>[ nome ]</b></div></div>
+      <div class="member"><div class="role">Subgrafo ego &amp; exploração</div>
+        <div class="desc">Vizinhança top-K, expansão e sementes.</div><div class="who">resp.: <b>[ nome ]</b></div></div>
+      <div class="member"><div class="role">Caminhos: Dijkstra + Yen</div>
+        <div class="desc">Menor caminho e as 3 rotas (curta/média/longa).</div><div class="who">resp.: <b>[ nome ]</b></div></div>
+      <div class="member"><div class="role">Grafo de conceitos</div>
+        <div class="desc">Co-ocorrência, poda top-K e frequência.</div><div class="who">resp.: <b>[ nome ]</b></div></div>
+      <div class="member"><div class="role">Pool &amp; obra mais distante</div>
+        <div class="desc">Ranking por média e argmin + caminho.</div><div class="who">resp.: <b>[ nome ]</b></div></div>
+      <div class="member"><div class="role">Visualização, UI &amp; deploy</div>
+        <div class="desc">d3-force, Vue, responsivo e publicação.</div><div class="who">resp.: <b>[ nome ]</b></div></div>
+    </div>
+  </section>
+
+  <!-- 13 · FECHAMENTO -->
+  <section class="slide cover">
+    <div class="kicker">Demonstração</div>
+    <h1 class="grad" style="max-width:18ch">Obrigado.<br>Vamos ao grafo.</h1>
+    <p style="margin-top:6px">Quatro pilares — tema, modelagem, estruturas e algoritmos — num só sistema interativo.</p>
+    <div class="url" style="font-size:20px;margin-top:22px"><b class="accent">metegraph.gabriwar.xyz</b></div>
+  </section>
+
+</div>
+</div>
+
+<script>
+  const slidesEl = document.getElementById('slides');
+  const total = slidesEl.children.length;
+  let i = 0;
+  document.getElementById('tot').textContent = total;
+  function go(n){
+    i = Math.max(0, Math.min(total-1, n));
+    slidesEl.style.transform = 'translateX(' + (-i*100) + 'vw)';
+    document.getElementById('cur').textContent = i+1;
+    document.getElementById('bar').style.width = ((i+1)/total*100) + '%';
+  }
+  function next(){ go(i+1); } function prev(){ go(i-1); }
+  document.getElementById('next').onclick = next;
+  document.getElementById('prev').onclick = prev;
+  addEventListener('keydown', e=>{
+    if(e.key==='ArrowRight'||e.key===' '||e.key==='PageDown'){ e.preventDefault(); next(); }
+    else if(e.key==='ArrowLeft'||e.key==='PageUp'){ e.preventDefault(); prev(); }
+    else if(e.key==='Home') go(0);
+    else if(e.key==='End') go(total-1);
+    else if(e.key.toLowerCase()==='f'){ if(!document.fullscreenElement) document.documentElement.requestFullscreen(); else document.exitFullscreen(); }
+  });
+  let sx=null;
+  addEventListener('touchstart', e=>{ sx=e.touches[0].clientX; }, {passive:true});
+  addEventListener('touchend', e=>{ if(sx===null) return; const dx=e.changedTouches[0].clientX-sx; if(Math.abs(dx)>50){ dx<0?next():prev(); } sx=null; }, {passive:true});
+  go(0);
+</script>
+</body>
+</html>
